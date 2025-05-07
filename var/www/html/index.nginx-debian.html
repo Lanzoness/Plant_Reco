@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Welcome to nginx!</title>
+        <style>
+            html { color-scheme: light dark; }
+            body { width: 35em; margin: 0 auto;
+            font-family: Tahoma, Verdana, Arial, sans-serif; }
+            /* Give the map a specific height AND width (or ensure its container has width) */
+            #map {
+                height: 400px; /* Increased height for better visibility */
+                width: 100%;   /* Make it take the full width of its container */
+            }
+        </style>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+        crossorigin=""/>
+        <!-- Make sure Leaflet JS is loaded AFTER the CSS and BEFORE your custom script -->
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        crossorigin=""></script>
+    </head>
+    <body>
+        <h1>Welcome to nginx!</h1>
+        <p>If you see this page, ibig sabihin noon ay gumagana na ang website ni Lance. Yay.</p>
+
+        <p>For online documentation and support please refer to
+        <a href="http://nginx.org/">nginx.org</a>.<br/>
+        Commercial support is available at
+        <a href="http://nginx.com/">nginx.com</a>.</p>
+
+        <p><em>Thank you for using nginx.</em></p>
+
+        <div id="map"></div>
+
+        <script>
+            // Ensure the DOM is fully loaded before trying to initialize the map,
+            // though placing the script at the end of the body often suffices.
+            document.addEventListener('DOMContentLoaded', function () {
+                // Initialize the map and set its view to chosen geographical coordinates and zoom level
+                // Example: Centered on the Philippines
+                var map = L.map('map').setView([14.1214, 120.8614], 12); // Coordinates for Philippines, Zoom level 5
+
+                // Add a tile layer to the map (OpenStreetMap is a common free choice)
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19,
+                    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                }).addTo(map);
+
+                // Optional: Add a marker
+                // L.marker([14.5995, 120.9842]).addTo(map) // Example: Manila
+                //     .bindPopup('Hello from Manila!')
+                //     .openPopup();
+            });
+        </script>
+    </body>
+</html>
