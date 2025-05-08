@@ -5,11 +5,52 @@
         <style>
             html { color-scheme: light dark; }
             body { margin: 0 auto;
-            font-family: Tahoma, Verdana, Arial, sans-serif; }
+                   font-family: Tahoma, Verdana, Arial, sans-serif; 
+            }
             /* Give the map a specific height AND width */
             #map {
                 height: 600px; /* Increased height for better visibility */
                 width: 100%;   /* Make it take the full width of its container */
+            }
+            #crop-selection {
+                outline-color: blue;
+                /* margin-top: 50px; */
+                position: fixed;
+                left: 0; /*adjust this to change its placement*/
+                right: 0; /* Move to the right side */
+                bottom: 76px; /*adjust this to change its placement*/
+                z-index: 1000;
+                background: #C1D8C3;
+                width: 200px;      /* Set a wider width */
+                height: 200px;     /* Set a taller height */
+                padding-top: 30px;     /* More internal space */
+                padding-left: 10px;     /* More internal space */
+                color:black;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            }
+            #map-types {
+                outline-color: blue;
+                /* margin-top: 50px; */
+                position: fixed;
+                left: 0; /*adjust this to change its placement*/
+                right: 0; /* Move to the right side */
+                top: 280px;
+                z-index: 1000;
+                background: #C1D8C3;
+                width: 200px;      /* Set a wider width */
+                height: 135px;     /* Set a taller height */
+                padding-top: 30px;     /* More internal space */
+                padding-left: 10px;     /* More internal space */
+                color:black;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            }
+            #body-text {
+                font-size: 12px;
+                padding: 0px;
+                margin: 0px;
+                margin-bottom: 10px;
+                font-weight: bold;
+                text-align: center;
             }
         </style>
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -23,6 +64,39 @@
         <center><h1>Crop Recommendation System for Alfonso, Cavite</h1></center>
 
         <div id="map"></div>
+        <!-- START section: GIS radio-btns -->
+        <div id="map-types">     
+            <div id="map-type-selection-btns">
+                <p id="body-text">Map Type</p>
+                <input type="radio" id = "topography" name="map-type">
+                <label for="topography">Topography</label><br>
+                <input type="radio" id = "rain" name="map-type">
+                <label for="rain">Rain</label><br>
+                <input type="radio" id = "temperature" name="map-type">
+                <label for="temperature">Temperature</label><br>
+                <input type="radio" id = "soil" name="map-type">
+                <label for="soil">Soil</label>
+            </div>
+        </div>
+        <!-- START section: GIS radio-btns -->
+
+        <!-- START section: crop radio-btns -->
+        <div id="crop-selection">
+            <div id="crop-selection-btns">
+                <p id="body-text">Crop Selection</p>
+                <input type="radio" id = "Chayote" name="crop-selection">
+                <label for="Chayote">Chayote</label><br>
+                <input type="radio" id = "Papaya" name="crop-selection">
+                <label for="Papaya">Papaya</label><br>
+                <input type="radio" id = "Cucumber" name="crop-selection">
+                <label for="Cucumber">Cucumber</label><br>
+                <input type="radio" id = "Eggplant" name="crop-selection">
+                <label for="Eggplant">Eggplant</label><br>
+                <input type="radio" id = "Chili" name="crop-selection">
+                <label for="Chili">Chili</label>
+            </div>
+          </div>
+        <!-- END section: crop radio-btns -->
 
         <script>
             document.addEventListener('DOMContentLoaded', function () {
