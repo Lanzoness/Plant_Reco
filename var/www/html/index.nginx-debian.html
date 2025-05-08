@@ -1,56 +1,173 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Welcome to nginx!</title>
+        <title>Farmer's Map</title>
         <style>
             html { color-scheme: light dark; }
-            body { width: 35em; margin: 0 auto;
+            body { margin: 0 auto;
             font-family: Tahoma, Verdana, Arial, sans-serif; }
-            /* Give the map a specific height AND width (or ensure its container has width) */
+            /* Give the map a specific height AND width */
             #map {
-                height: 400px; /* Increased height for better visibility */
+                height: 600px; /* Increased height for better visibility */
                 width: 100%;   /* Make it take the full width of its container */
             }
         </style>
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
         crossorigin=""/>
-        <!-- Make sure Leaflet JS is loaded AFTER the CSS and BEFORE your custom script -->
         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
         crossorigin=""></script>
     </head>
     <body>
-        <h1>Welcome to nginx!</h1>
-        <p>If you see this page, ibig sabihin noon ay gumagana na ang website ni Lance. Yay.</p>
-
-        <p>For online documentation and support please refer to
-        <a href="http://nginx.org/">nginx.org</a>.<br/>
-        Commercial support is available at
-        <a href="http://nginx.com/">nginx.com</a>.</p>
-
-        <p><em>Thank you for using nginx.</em></p>
+        <center><h1>Crop Recommendation System for Alfonso, Cavite</h1></center>
 
         <div id="map"></div>
 
         <script>
-            // Ensure the DOM is fully loaded before trying to initialize the map,
-            // though placing the script at the end of the body often suffices.
             document.addEventListener('DOMContentLoaded', function () {
-                // Initialize the map and set its view to chosen geographical coordinates and zoom level
-                // Example: Centered on the Philippines
-                var map = L.map('map').setView([14.1214, 120.8614], 12); // Coordinates for Philippines, Zoom level 5
+                var map = L.map('map');
 
-                // Add a tile layer to the map (OpenStreetMap is a common free choice)
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     maxZoom: 19,
                     attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 }).addTo(map);
 
-                // Optional: Add a marker
-                // L.marker([14.5995, 120.9842]).addTo(map) // Example: Manila
-                //     .bindPopup('Hello from Manila!')
-                //     .openPopup();
+                // Directly use the GeoJSON Feature for Alfonso, Cavite
+                // Sourced from the snippet you provided (originally from https://github.com/macoymejia/geojsonph/blob/master/MuniCities/MuniCities.json)
+                const alfonsoFeature = {
+                    "type": "Feature",
+                    "properties": {
+                        "ID_0": 177, "ISO": "PHL", "NAME_0": "Philippines", "ID_1": 24, "NAME_1": "Cavite",
+                        "ID_2": 417, "NAME_2": "Alfonso", "NL_NAME_2": "", "VARNAME_2": "",
+                        "TYPE_2": "Bayan|Munisipyo", "ENGTYPE_2": "Municipality", "PROVINCE": "Cavite",
+                        "REGION": "CALABARZON (Region IV-A)"
+                    },
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [ // Note: This is an array of rings. The first is the exterior.
+                            [
+                                [120.847168, 14.158600], [120.847603, 14.158140], [120.849083, 14.158190],
+                                [120.850533, 14.157930], [120.851051, 14.157540], [120.851669, 14.156570],
+                                [120.851883, 14.156010], [120.852173, 14.154920], [120.852539, 14.153970],
+                                [120.852524, 14.153900], [120.852943, 14.153210], [120.853859, 14.152610],
+                                [120.856148, 14.151800], [120.857399, 14.150990], [120.857613, 14.150780],
+                                [120.858887, 14.149850], [120.860252, 14.148860], [120.860733, 14.148010],
+                                [120.861122, 14.147520], [120.862160, 14.146780], [120.863060, 14.145670],
+                                [120.863113, 14.144490], [120.863297, 14.143790], [120.863403, 14.143630],
+                                [120.864151, 14.142610], [120.864410, 14.141730], [120.865662, 14.140060],
+                                [120.866158, 14.138630], [120.866821, 14.137650], [120.868553, 14.136960],
+                                [120.869347, 14.136330], [120.870216, 14.135150], [120.870934, 14.134640],
+                                [120.871513, 14.133900], [120.871986, 14.132930], [120.872208, 14.132330],
+                                [120.872276, 14.132030], [120.872650, 14.131260], [120.872910, 14.130730],
+                                [120.873192, 14.129690], [120.873390, 14.128480], [120.874336, 14.127210],
+                                [120.874809, 14.126420], [120.875923, 14.125010], [120.876518, 14.124450],
+                                [120.877663, 14.123800], [120.878967, 14.123250], [120.879662, 14.123050],
+                                [120.879784, 14.122950], [120.882843, 14.117090], [120.885078, 14.111840],
+                                [120.887589, 14.106110], [120.887993, 14.104810], [120.888527, 14.103210],
+                                [120.888939, 14.102450], [120.890503, 14.099010], [120.892410, 14.094680],
+                                [120.894753, 14.088950], [120.895767, 14.086880], [120.886742, 14.086730],
+                                [120.883904, 14.085950], [120.878143, 14.083530], [120.875587, 14.082030],
+                                [120.864594, 14.076770], [120.861794, 14.074490], [120.860603, 14.073730],
+                                [120.859741, 14.072570], [120.858994, 14.071810], [120.857903, 14.071160],
+                                [120.856209, 14.070380], [120.853828, 14.068180], [120.849129, 14.064670],
+                                [120.844170, 14.061330], [120.844116, 14.062630], [120.843750, 14.064200],
+                                [120.843536, 14.064930], [120.843269, 14.067530], [120.844276, 14.070550],
+                                [120.844719, 14.072800], [120.844254, 14.075980], [120.842827, 14.078980],
+                                [120.842377, 14.080720], [120.841537, 14.083760], [120.841293, 14.085170],
+                                [120.839783, 14.086600], [120.838577, 14.087580], [120.837547, 14.089020],
+                                [120.835640, 14.090300], [120.834396, 14.090830], [120.833069, 14.091470],
+                                [120.832047, 14.091990], [120.831032, 14.092630], [120.830307, 14.093100],
+                                [120.829193, 14.094800], [120.827904, 14.096170], [120.822678, 14.098820],
+                                [120.820641, 14.099410], [120.819450, 14.100160], [120.818367, 14.100760],
+                                [120.817139, 14.102820], [120.814278, 14.105400], [120.813454, 14.105870],
+                                [120.812721, 14.106430], [120.810417, 14.108430], [120.810471, 14.110560],
+                                [120.810837, 14.112010], [120.810532, 14.112870], [120.810600, 14.113730],
+                                [120.810806, 14.115000], [120.811043, 14.116480], [120.811256, 14.118090],
+                                [120.811523, 14.119610], [120.812119, 14.121760], [120.813026, 14.124450],
+                                [120.812950, 14.125910], [120.813850, 14.128680], [120.813637, 14.131220],
+                                [120.813263, 14.132990], [120.816177, 14.134470], [120.816933, 14.136280],
+                                [120.818542, 14.138550], [120.818909, 14.139680], [120.820099, 14.141980],
+                                [120.821640, 14.143990], [120.822601, 14.145220], [120.824020, 14.146880],
+                                [120.825821, 14.148920], [120.827927, 14.151260], [120.828697, 14.152050],
+                                [120.829582, 14.153090], [120.831543, 14.154320], [120.833191, 14.156150],
+                                [120.834061, 14.156750], [120.835136, 14.157470], [120.835747, 14.157870],
+                                [120.836922, 14.158660], [120.838654, 14.159680], [120.840027, 14.160280],
+                                [120.841499, 14.160840], [120.843384, 14.161750], [120.845001, 14.162400],
+                                [120.846428, 14.162840], [120.846809, 14.161190], [120.846947, 14.160870],
+                                [120.847069, 14.160410], [120.847023, 14.159550], [120.847168, 14.158600]
+                            ]
+                        ]
+                    }
+                };
+
+                if (!alfonsoFeature || !alfonsoFeature.geometry) {
+                    console.error("Alfonso, Cavite GeoJSON data is missing or invalid.");
+                    map.setView([12.8797, 121.7740], 6); // Default to a wider view of PH
+                    alert("Could not load boundary data for Alfonso, Cavite. GeoJSON seems invalid.");
+                    return;
+                }
+
+                // 1. Create a GeoJSON layer for Alfonso's BORDER (dotted red lines)
+                var alfonsoBorderLayer = L.geoJSON(alfonsoFeature, {
+                    style: function (feature) {
+                        return {
+                            color: 'red',       // Red border
+                            weight: 2,          // Border thickness
+                            opacity: 1,
+                            dashArray: '5, 10', // Dotted line (5px line, 10px space)
+                            fillOpacity: 0      // No fill, we only want the border
+                        };
+                    }
+                }).addTo(map);
+
+                // 2. Create the MASK layer (gray out everything else)
+                var maskGeoJson = {
+                    type: "Feature",
+                    geometry: {
+                        type: "Polygon",
+                        coordinates: [
+                            // Outer ring: A large rectangle covering the world (GeoJSON is [lng, lat])
+                            [[-180, -90], [180, -90], [180, 90], [-180, 90], [-180, -90]]
+                        ]
+                    }
+                };
+
+                // Add Alfonso's polygon(s) as holes to the mask
+                // Since alfonsoFeature.geometry.type is "Polygon", its coordinates array
+                // contains one exterior ring (alfonsoFeature.geometry.coordinates[0])
+                // and optionally subsequent interior rings (holes within Alfonso itself).
+                // For the mask, we only need the exterior ring to define the hole.
+                if (alfonsoFeature.geometry.type === "Polygon" && alfonsoFeature.geometry.coordinates.length > 0) {
+                    maskGeoJson.geometry.coordinates.push(alfonsoFeature.geometry.coordinates[0]);
+                } else {
+                    console.warn("Alfonso feature is not a simple Polygon or has no coordinates, cannot create mask hole properly.");
+                }
+                // Note: If Alfonso itself could be a MultiPolygon, the logic would need to iterate
+                // through alfonsoFeature.geometry.coordinates, adding each part's exterior ring.
+                // But given your snippet is a single Polygon, this is sufficient.
+
+                L.geoJSON(maskGeoJson, {
+                    style: function() {
+                        return {
+                            fillColor: 'gray',
+                            fillOpacity: 0.6, // Semi-transparent gray
+                            stroke: false     // No border for the mask itself
+                        };
+                    }
+                }).addTo(map);
+
+                // Ensure Alfonso's red border is on top of the gray mask
+                alfonsoBorderLayer.bringToFront();
+
+                // 3. Set map view to fit Alfonso's boundaries
+                if (alfonsoBorderLayer.getBounds().isValid()) {
+                    map.fitBounds(alfonsoBorderLayer.getBounds());
+                } else {
+                    console.error("Could not calculate bounds for Alfonso. Setting a default view.");
+                    map.setView([14.1214, 120.8614], 12); // Approx. Alfonso center
+                }
+
             });
         </script>
     </body>
