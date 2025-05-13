@@ -68,6 +68,57 @@ body { margin: 0 auto;
     text-align: center;
 }
 
+/* INPUT FEILD CSS START */
+
+.inputs-container {
+    display: flex; /* Arrange input wrappers side-by-side */
+    gap: 30px;     /* Space between the two input sections */
+    align-items: flex-start; /* Align items at the top */
+    margin-bottom: 20px; /* Space between inputs row and dropdowns row */
+}
+
+.input-wrapper {
+    display: flex;
+    /* Changed: Arrange label and input one below the other */
+    flex-direction: column;
+    /* Changed: Align items to the start (left) */
+    align-items: flex-start;
+}
+
+.input-label {
+    font-size: 14px;
+    color: black;
+    /* Changed: Space below the label */
+    margin-bottom: 5px;
+    margin-right: 0; /* Ensure no right margin */
+    white-space: nowrap;
+}
+
+/* --- Styles for Input Fields (NO CHANGES) --- */
+.input-wrapper input[type="text"] {
+    background-color: white;
+    color: black;
+    font-size: 14px;
+    width: 212px;
+    height: 29px;
+    padding: 0 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.input-wrapper input[type="text"]::placeholder {
+    color: grey;
+    opacity: 1;
+}
+
+.input-wrapper input[type="text"]:focus {
+    outline: none;
+    border-color: #193441;
+    box-shadow: 0 0 0 2px rgba(25, 52, 65, 0.2);
+}
+
+/* INPUT FEILD CSS END */
 
 /* DROPDOWN CSS START */
 .temperature-box{
