@@ -1,110 +1,69 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Farmer's Map</title>
-        <link rel="stylesheet" href="styles.css">
+        <style>
+            html { color-scheme: light dark; }
+            body { margin: 0 auto;
+                   font-family: Tahoma, Verdana, Arial, sans-serif; 
+            }
+            /* Give the map a specific height AND width */
+            #map {
+                height: 600px; /* Increased height for better visibility */
+                width: 100%;   /* Make it take the full width of its container */
+            }
+            #crop-selection {
+                outline-color: blue;
+                /* margin-top: 50px; */
+                position: fixed;
+                left: 0; /*adjust this to change its placement*/
+                right: 0; /* Move to the right side */
+                bottom: 76px; /*adjust this to change its placement*/
+                z-index: 1000;
+                background: #C1D8C3;
+                width: 200px;      /* Set a wider width */
+                height: 200px;     /* Set a taller height */
+                padding-top: 30px;     /* More internal space */
+                padding-left: 10px;     /* More internal space */
+                color:black;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            }
+            #map-types {
+                outline-color: blue;
+                /* margin-top: 50px; */
+                position: fixed;
+                left: 0; /*adjust this to change its placement*/
+                right: 0; /* Move to the right side */
+                top: 280px;
+                z-index: 1000;
+                background: #C1D8C3;
+                width: 200px;      /* Set a wider width */
+                height: 135px;     /* Set a taller height */
+                padding-top: 30px;     /* More internal space */
+                padding-left: 10px;     /* More internal space */
+                color:black;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            }
+            #body-text {
+                font-size: 12px;
+                padding: 0px;
+                margin: 0px;
+                margin-bottom: 10px;
+                font-weight: bold;
+                text-align: center;
+            }
+        </style>
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
         crossorigin=""/>
         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
         crossorigin=""></script>
-        <style>
-            /* Add this style block in the head section */
-            .tabcontent {
-                display: none;
-            }
-        </style>
     </head>
     <body>
-        <!-- NAV BAR HEADER START-->
-        <center><h3>Crop Recommendation System for Alfonso, Cavite</h3></center>
-        <!-- NAV BAR HEADER END -->
+        <center><h1>Crop Recommendation System for Alfonso, Cavite</h1></center>
 
-        <!-- MAP SECTION START -->
         <div id="map"></div>
-        <!-- MAP SECTION END -->
-                
-                <!-- TEMPERATURE DATA CONTAINER START -->
-                <div class="temperature-box">
-                    <p class="main-label">Select a Range of Temperature Data</p>
-                        <div class="tab">
-                            <button class="tablinks" onclick="openCity(event, 'inputs-container')">Manually Enter Data</button>
-                            <button class="tablinks" onclick="openCity(event, 'dropdowns-container')">Use Historical Data</button>
-                          </div>
-                        <!-- TEXTBOX INPUT CONTAINER START -->
-                        <div id="inputs-container" class="tabcontent">
-                            <div class="input-wrapper">
-                                <!-- CURRENT DATE INPUT START -->
-                                <label for="curr_date_input" class="input-label">Enter Current Date:</label>
-                                <!-- CURRENT DATE id & name: curr_date_input--> 
-                                <input type="text" id="curr_date_input" name="curr_date_input" placeholder="Enter date">
-                                <!-- CURRENT DATE INPUT END -->   
-                            </div>
-                                
-                            <div class="input-wrapper">
-                                <!-- CURRENT TEMP INPUT START -->
-                                <label for="alfonso_temp_input" class="input-label">Enter Current Temp in Alfonso:</label>
-                                <!-- ALFONSO TEMP id & name: alfonso_temp_input -->
-                                <input type="text" id="alfonso_temp_input" name="alfonso_temp_input" placeholder="Enter temperature">
-                                <!-- CURRENT TEMP INPUT END -->
-                            </div>
-                        <!-- TEXTBOX INPUT CONTAINER END -->
-
-                        </div>
-                        <!-- END NEW: Inputs Container -->
-
-                        <!-- YEAR SELECTION DROPDOWN START -->
-                        <div id="dropdowns-container" class="tabcontent">
-                            <div class="dropdown-wrapper">
-                                <!-- DROPDOWN DEFAULT LABEL -->
-                                <label for="year_dropdown" class="dropdown-top-labell">Pick a Year:</label>
-                                <!-- DROPDOWN DEFAULT LABEL -->
-                                <div class="select-wrapper">
-                                    <!-- YEAR DROPDOWN id & name: "year_dropdown -->
-                                    <select id="year_dropdown" name="year_dropdown">
-                                        <option value="" disabled selected>PICK A YEAR</option>
-                                        <!-- YERR DROPDOWN value variable is same as year labels -->
-                                        <option value="2025">2025</option>
-                                        <option value="2024">2024</option>
-                                        <option value="2023">2023</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <!-- YEAR SELECTION DROPDOWN END -->
-
-                            <!-- MONTH SELECTION DROPDOWN START -->
-                            <div class="dropdown-wrapper">
-                                <!-- DROPDOWN DEFAULT LABEL -->
-                                <label for="month_dropdown" class="dropdown-top-labell">Pick a Month:</label>
-                                <!-- DROPDOWN DEFAULT LABEL -->
-                                <div class="select-wrapper">
-                                    <!-- MONTH DROPDOWN id & name: month_dropdown -->
-                                    <select id="month_dropdown" name="month_dropdown">                            
-                                        <option value="" disabled selected>PICK A MONTH</option>
-                                        <!-- MONTH DROPDOWN value variable per list item 01-january and it increases till december -->
-                                        <option value="01">January</option>
-                                        <option value="02">February</option>
-                                        <option value="03">March</option>
-                                        <option value="04">April</option>
-                                        <option value="05">May</option>
-                                        <option value="06">June</option>
-                                        <option value="07">July</option>
-                                        <option value="08">August</option>
-                                        <option value="09">September</option>
-                                        <option value="10">October</option>
-                                        <option value="11">November</option>
-                                        <option value="12">December</option>
-                                    </select>
-                                </div>
-                            </div>
-                        <!-- MONTH SELECTION DROPDOWN START -->
-                        </div>
-                </div>
-                <!-- TEMPERATURE DATA CONTAINER END -->
-         
         <!-- START section: GIS radio-btns -->
         <div id="map-types">     
             <div id="map-type-selection-btns">
@@ -139,46 +98,9 @@
           </div>
         <!-- END section: crop radio-btns -->
 
-        <!-- This is for the temperature input tab panels -->
-        <script>
-            function openCity(evt, cityName) {
-                // Declare all variables
-                var i, tabcontent, tablinks;
-
-                // Get all elements with class="tabcontent" and hide them
-                tabcontent = document.getElementsByClassName("tabcontent");
-                for (i = 0; i < tabcontent.length; i++) {
-                    tabcontent[i].style.display = "none";
-                }
-
-                // Get all elements with class="tablinks" and remove the class "active"
-                tablinks = document.getElementsByClassName("tablinks");
-                for (i = 0; i < tablinks.length; i++) {
-                    tablinks[i].className = tablinks[i].className.replace(" active", "");
-                }
-
-                // Clear all input fields upon tab switch
-                document.getElementById('curr_date_input').value = '';
-                document.getElementById('alfonso_temp_input').value = '';
-                document.getElementById('year_dropdown').value = '';
-                document.getElementById('month_dropdown').value = '';
-
-                // Show the current tab, and add an "active" class to the button that opened the tab
-                document.getElementById(cityName).style.display = "block";
-                evt.currentTarget.className += " active";
-            }
-        </script>
-        <!-- Map Script is here -->
         <script>
             document.addEventListener('DOMContentLoaded', function () {
-                var map = L.map('map', {
-                    zoomControl: false  // Disable default zoom control
-                });
-
-                // Add zoom control to top right
-                L.control.zoom({
-                    position: 'topright'
-                }).addTo(map);
+                var map = L.map('map');
 
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     maxZoom: 19,
