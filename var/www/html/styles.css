@@ -142,7 +142,7 @@ body {
     position: fixed;
     left: 0; /*adjust this to change its placement*/
     right: 0; /* Move to the right side */
-    top: 150px;
+    top: 80px;
     z-index: 1000;
     border-radius: 0px 15px 15px 0px;
     padding: 18px;
@@ -240,6 +240,32 @@ body {
 }
 /* DROPDOWN CSS END */
 
-/* TEXT STYLES START */
+/* --- NEW STYLES FOR BUTTONS --- */
+button {
+    /* Default Button Styles */
+    background-color: #3D58A7;
+    border: 1px solid #324B94;
+    color: white;
+    font-size: 11.5px;
+    padding: 5px 10px; /* Adjust padding as needed */
+    font-weight: bold;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease; /* Smooth transition for hover */
+    margin-top: 10px;
+    width: 212px; 
+    height: 33px;
+}
 
-/* TEXT STYLES END */
+/* Hover and Active (Clicked) Styles */
+button:hover,
+button:active {
+    /* Use RGBA for opacity on color */
+    background-color: rgba(61, 88, 167, 0.75); /* #3D58A7 with 75% opacity */
+    border-color: rgba(50, 75, 148, 0.75); /* #324B94 with 75% opacity */
+    /* Text color remains white (100% opacity) */
+    color: white;
+    /* Ensure overall element opacity is 100% */
+    opacity: 1;
+}
+/* --- END NEW STYLES FOR BUTTONS --- */

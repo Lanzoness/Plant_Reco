@@ -28,12 +28,17 @@
                 <!-- TEXTBOX INPUT CONTAINER START -->
                 <div class="inputs-container">
                     <div class="input-wrapper">
-                        <!-- CURRENT DATE INPUT START -->
+                    <!-- CURRENT DATE INPUT START -->
                         <label for="curr_date_input" class="input-label">Enter Current Date:</label>
                         <!-- CURRENT DATE id & name: curr_date_input-->
                         <input type="text" id="curr_date_input" name="curr_date_input" placeholder="Enter date">
                         <!-- CURRENT DATE INPUT END -->
+
+                        <!-- CURRENT DATE BUTTON START -->
+                        <button id="current_date_btn">SUBMIT CURRENT DATE</button>
+                        <!-- CURRENT DATE BUTTON END -->
                     </div>
+                    <!-- CURRENT DATE INPUT CONTAINER END -->
 
                     <div class="input-wrapper">
                         <!-- CURRENT TEMP INPUT START -->
@@ -41,8 +46,11 @@
                         <!-- ALFONSO TEMP id & name: alfonso_temp_input -->
                         <input type="text" id="alfonso_temp_input" name="alfonso_temp_input" placeholder="Enter temperature">
                         <!-- CURRENT TEMP INPUT END -->
+                        <!-- CURRENT TEMPERATURE BUTTON START -->
+                        <button id="current_temp_btn">SUBMIT CURRENT TEMP.</button>
+                        <!-- CURRENT TEMPERATURE BUTTON END -->
                     </div>
-                <!-- TEXTBOX INPUT CONTAINER END -->
+                   <!-- TEXTBOX INPUT CONTAINER END -->
 
                 </div>
                 <!-- END NEW: Inputs Container -->
@@ -54,7 +62,7 @@
                         <label for="year_dropdown" class="dropdown-top-labell">Pick a Year:</label>
                         <!-- DROPDOWN DEFAULT LABEL -->
                         <div class="select-wrapper">
-                            <!-- YEAR DROPDOWN id & name: "year_dropdown -->
+                            <!-- YEAR DROPDOWN id & name: year_dropdown -->
                             <select id="year_dropdown" name="year_dropdown">
                                 <option value="" disabled selected>PICK A YEAR</option>
                                 <!-- YERR DROPDOWN value variable is same as year labels -->
@@ -63,6 +71,9 @@
                                 <option value="2023">2023</option>
                             </select>
                         </div>
+                    <!-- CURRENT YEAR & MONTH BUTTON START -->
+                    <button id="current_yr_month_btn">SUBMIT YEAR & MONTH</button>
+                    <!-- CURRENT YEAR & MONTH BUTTON END -->
                     </div>
                     <!-- YEAR SELECTION DROPDOWN END -->
 
@@ -128,7 +139,7 @@
             </div>
           </div>
         <!-- END section: crop radio-btns -->
-
+        <script src="temperature-buttons.js"></script>
         <script>
             document.addEventListener('DOMContentLoaded', function () {
                 // Initialize the map. Leaflet automatically adds a zoom control
