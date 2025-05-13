@@ -40,7 +40,7 @@ body {
     z-index: 1000;
     background: #C1D8C3;
     width: 200px;      /* Set a wider width */
-    height: 135px;     /* Set a taller height */
+    height: 120px;     /* Set a taller height */
     padding-top: 30px;     /* More internal space */
     padding-left: 10px;     /* More internal space */
     color:black;
@@ -56,7 +56,7 @@ body {
     position: fixed;
     left: 0; /*adjust this to change its placement*/
     right: 0; /* Move to the right side */
-    top: 552px; /*align from top*/
+    top: 536px; /*align from top*/
     z-index: 1000;
     background: #C1D8C3;
     width: 200px;      /* Set a wider width */
@@ -267,5 +267,22 @@ button:active {
     color: white;
     /* Ensure overall element opacity is 100% */
     opacity: 1;
+}
+
+/* Specific styles for the Clear button */
+#temp_clear_btn {
+    background-color: #9F2A2A; /* Default background color */
+    border: 1px solid #9F2A2A; /* Default border color */
+    color: white; /* Default font color */
+}
+
+/* Hover and Active (Clicked) Styles specifically for the Clear button */
+#temp_clear_btn:hover,
+#temp_clear_btn:active {
+    /* Use RGBA for opacity on color */
+    background-color: rgba(159, 42, 42, 0.75); /* #9F2A2A with 75% opacity */
+    border-color: rgba(131, 25, 25, 0.75); /* #831919 with 75% opacity */
+    color: white; /* Keep text color */
+    opacity: 1; /* Ensure overall element opacity is 100% */
 }
 /* --- END NEW STYLES FOR BUTTONS --- */
