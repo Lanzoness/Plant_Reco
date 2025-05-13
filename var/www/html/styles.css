@@ -7,6 +7,33 @@ body { margin: 0 auto;
     height: 600px; /* Increased height for better visibility */
     width: 100%;   /* Make it take the full width of its container */
 }
+#body-text {
+    font-size: 12px;
+    padding: 0px;
+    margin: 0px;
+    margin-bottom: 10px;
+    font-weight: bold;
+    text-align: center;
+}
+
+#map-types {
+    outline-color: blue;
+    /* margin-top: 50px; */
+    position: fixed;
+    left: 0; /*adjust this to change its placement*/
+    right: 0; /* Move to the right side */
+    top: 370px;
+    z-index: 1000;
+    background: #C1D8C3;
+    width: 200px;      /* Set a wider width */
+    height: 135px;     /* Set a taller height */
+    padding-top: 30px;     /* More internal space */
+    padding-left: 10px;     /* More internal space */
+    color:black;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    border-radius: 0px 15px 15px 0px;
+}
+
 #crop-selection {
     outline-color: blue;
     /* margin-top: 50px; */
@@ -17,33 +44,130 @@ body { margin: 0 auto;
     z-index: 1000;
     background: #C1D8C3;
     width: 200px;      /* Set a wider width */
-    height: 200px;     /* Set a taller height */
+    height: 150px;     /* Set a taller height */
     padding-top: 30px;     /* More internal space */
     padding-left: 10px;     /* More internal space */
     color:black;
     box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    border-radius: 0px 15px 15px 0px;
 }
-#map-types {
-    outline-color: blue;
-    /* margin-top: 50px; */
+
+.temperature-box {
+    background-color: #C1D8C3;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    color: black; 
+    width: fit-content; 
+}
+
+.main-label {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+
+/* DROPDOWN CSS START */
+.temperature-box{
     position: fixed;
     left: 0; /*adjust this to change its placement*/
     right: 0; /* Move to the right side */
-    top: 280px;
+    top: 210px;
     z-index: 1000;
-    background: #C1D8C3;
-    width: 200px;      /* Set a wider width */
-    height: 135px;     /* Set a taller height */
-    padding-top: 30px;     /* More internal space */
-    padding-left: 10px;     /* More internal space */
-    color:black;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    border-radius: 0px 15px 15px 0px;
+    padding: 18px;
 }
-#body-text {
-    font-size: 12px;
-    padding: 0px;
-    margin: 0px;
-    margin-bottom: 10px;
+.dropdowns-container {
+    display: flex;
+    gap: 30px; 
+    align-items: flex-start; /* Align labels to right */
+    margin: 0px
+}
+
+.dropdown-wrapper {
+    display: flex;
+    flex-direction: column; /* Stack label above dropdown */
+    justify-content: center; /* Center the label vertically */}
+
+.dropdown-top-labell {
+    font-size: 14px;
+    color: black; /* Label font color */
+    margin-bottom: 5px; /* Space between label and dropdown */
     font-weight: bold;
-    text-align: center;
 }
+
+.select-wrapper {
+    position: relative; /* Needed to position the custom arrow */
+    display: inline-block; /* Wrap tightly around the select */
+}
+
+/* CLOSED DROPDOWN STYLES */
+.select-wrapper select {
+    width: 212px;
+    height: 29px;
+    background-color: #193441;
+    color: white; /* Text color for selected option/default label */
+    font-size: 14px;
+    padding: 0 30px 0 10px; /* Add padding for text and space for custom arrow */
+    border: none;
+    border-radius: 4px; /* Optional: Slightly rounded corners */
+    cursor: pointer;
+}
+/* CLOSED DROPDOWN STYLES */
+
+
+/* DROPDOWN ARROW */
+/* .select-wrapper::after { */
+   /* content: '\25BC'; /* Unicode character for a down arrow */
+   /* position: absolute;
+   /* top: 50%;
+   /* width: 20px; /* Width of the arrow */
+   /* right: 10px; /* Position from the right edge */
+   /* transform: translateY(-50%);
+   /* color: white; /* Arrow color */
+   /* font-size: 15px; /* Arrow size */
+   /* pointer-events: none; /* Allow clicks to pass through to the select */
+    /* code below disables default arrow for drowdowns */
+   /* appearance: none;
+   /* -webkit-appearance: none; /* For Safari */
+   /* -moz-appearance: none; /* For Firefox */
+/* } */
+/* DROPDOWN ARROW */
+
+
+/* DROPDOWN LIST ITEM STYLES */
+.select-wrapper select option {
+    background-color: #193441; 
+    color: white; 
+    font-size: 14px;
+    padding: 5px 10px; 
+}
+/* DROPDOWN LIST ITEM STYLES */
+
+
+/* FIX: Hover effect not working */
+.select-wrapper select option:hover {
+    background-color: #FFA36C; /* HOVER COLOR ANIMATION  */
+    opacity: 53%; /* Optional: Change opacity on hover */
+    color: #193441; /* Optional: Change text color on hover for contrast */
+}
+/* FIX: Hover effect not working */
+
+
+/* DISABLED DROPDOWN LIST ITEM LABEL */
+.select-wrapper select option:disabled {
+    color: #bbb; 
+}
+/* DISABLED DROPDOWN LIST ITEM LABEL */
+
+.dropdowns-container {
+    margin-bottom: 10px;
+}
+
+.select-wrapper select:focus {
+    outline: none; /* Remove default outline */
+    box-shadow: 0 0 0 2px rgba(25, 52, 65, 0.5); /* Add a custom focus ring */
+}
+/* DROPDOWN CSS END */
