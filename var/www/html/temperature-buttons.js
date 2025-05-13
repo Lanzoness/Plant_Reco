@@ -12,19 +12,19 @@ const currentDateBtn = document.getElementById('current_date_btn');
 const currentTempBtn = document.getElementById('current_temp_btn');
 const currentYrMonthBtn = document.getElementById('current_yr_month_btn');
 
-// NEW: Add event listener for the "SUBMIT CURRENT DATE" button
+// Event listener for the "SUBMIT CURRENT DATE" button
 currentDateBtn.addEventListener('click', function() {
     const dateValue = currDateInput.value; // Get the value from the date input field
     console.log("Submitted Current Date:", dateValue); // Print the stored value
 });
 
-// NEW: Add event listener for the "SUBMIT CURRENT TEMP." button
+// Event listener for the "SUBMIT CURRENT TEMP." button
 currentTempBtn.addEventListener('click', function() {
     const tempValue = alfonsoTempInput.value; // Get the value from the temperature input field
     console.log("Submitted Current Temperature:", tempValue); // Print the stored value
 });
 
-// NEW: Add event listener for the "SUBMIT YEAR & MONTH" button
+// Event listener for the "SUBMIT YEAR & MONTH" button
 currentYrMonthBtn.addEventListener('click', function() {
     const selectedYear = yearDropdown.value; // Get the selected value from the year dropdown
     const selectedMonth = monthDropdown.value; // Get the selected value from the month dropdown

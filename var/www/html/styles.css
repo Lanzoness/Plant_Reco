@@ -56,7 +56,7 @@ body {
     position: fixed;
     left: 0; /*adjust this to change its placement*/
     right: 0; /* Move to the right side */
-    top: 554px; /*align from top*/
+    top: 552px; /*align from top*/
     z-index: 1000;
     background: #C1D8C3;
     width: 200px;      /* Set a wider width */
@@ -142,7 +142,7 @@ body {
     position: fixed;
     left: 0; /*adjust this to change its placement*/
     right: 0; /* Move to the right side */
-    top: 80px;
+    top: 65px;
     z-index: 1000;
     border-radius: 0px 15px 15px 0px;
     padding: 18px;
