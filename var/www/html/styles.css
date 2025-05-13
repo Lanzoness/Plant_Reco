@@ -1,0 +1,288 @@
+html { 
+    background-color: #193441; 
+}
+body { 
+    margin: 0 auto;
+    padding: 0;
+    font-family: Tahoma, Verdana, Arial, sans-serif; 
+}
+
+/* ZOOM-IN/OUT btn placement */
+.leaflet-control-container .leaflet-top.leaflet-right {
+    top: 20px; /* Distance from the top edge of the map */
+    right: 5px; /* Distance from the right edge of the map */
+}
+/* ZOOM-IN/OUT btn placement */
+
+/* Give the map a specific height AND width */
+#map {
+    height: 700px; /* Increased height for better visibility */
+    width: 100%;   /* Make it take the full width of its container */
+}
+
+#body-text {
+    font-size: 12px;
+    padding: 0px;
+    margin: 0px;
+    margin-bottom: 10px;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* MAP-TYPE START */
+#map-types {
+    outline-color: blue;
+    /* margin-top: 50px; */
+    position: fixed;
+    left: 0; /*adjust this to change its placement*/
+    right: 0; /* Move to the right side */
+    top: 380px; /*align from top*/
+    z-index: 1000;
+    background: #C1D8C3;
+    width: 200px;      /* Set a wider width */
+    height: 120px;     /* Set a taller height */
+    padding-top: 30px;     /* More internal space */
+    padding-left: 10px;     /* More internal space */
+    color:black;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    border-radius: 0px 15px 15px 0px;
+}
+/* MAP-TYPE END */
+
+/* CROP SELECTION START */
+#crop-selection {
+    outline-color: blue;
+    /* margin-top: 50px; */
+    position: fixed;
+    left: 0; /*adjust this to change its placement*/
+    right: 0; /* Move to the right side */
+    top: 536px; /*align from top*/
+    z-index: 1000;
+    background: #C1D8C3;
+    width: 200px;      /* Set a wider width */
+    height: 150px;     /* Set a taller height */
+    padding-top: 30px;     /* More internal space */
+    padding-left: 10px;     /* More internal space */
+    color:black;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    border-radius: 0px 15px 15px 0px;
+}
+/* CROP SELECTION END */
+
+.temperature-box {
+    background-color: #C1D8C3;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    color: black; 
+    width: fit-content; 
+}
+
+.main-label {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* INPUT FEILD CSS START */
+
+.inputs-container {
+    display: flex; /* Arrange input wrappers side-by-side */
+    gap: 30px;     /* Space between the two input sections */
+    align-items: flex-start; /* Align items at the top */
+    margin-bottom: 20px; /* Space between inputs row and dropdowns row */
+}
+
+.input-wrapper {
+    display: flex;
+    /* Changed: Arrange label and input one below the other */
+    flex-direction: column;
+    /* Changed: Align items to the start (left) */
+    align-items: flex-start;
+}
+
+.input-label {
+    font-size: 14px;
+    color: black;
+    /* Changed: Space below the label */
+    margin-bottom: 5px;
+    margin-right: 0; /* Ensure no right margin */
+    white-space: nowrap;
+}
+
+/* --- Styles for Input Fields (NO CHANGES) --- */
+.input-wrapper input[type="text"] {
+    background-color: white;
+    color: black;
+    font-size: 14px;
+    width: 212px;
+    height: 29px;
+    padding: 0 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.input-wrapper input[type="text"]::placeholder {
+    color: grey;
+    opacity: 1;
+}
+
+.input-wrapper input[type="text"]:focus {
+    outline: none;
+    border-color: #193441;
+    box-shadow: 0 0 0 2px rgba(25, 52, 65, 0.2);
+}
+
+/* INPUT FEILD CSS END */
+
+/* DROPDOWN CSS START */
+.temperature-box{
+    position: fixed;
+    left: 0; /*adjust this to change its placement*/
+    right: 0; /* Move to the right side */
+    top: 65px;
+    z-index: 1000;
+    border-radius: 0px 15px 15px 0px;
+    padding: 18px;
+}
+.dropdowns-container {
+    display: flex;
+    gap: 30px; 
+    align-items: flex-start; /* Align labels to right */
+    margin: 0px
+}
+
+.dropdown-wrapper {
+    display: flex;
+    flex-direction: column; /* Stack label above dropdown */
+    justify-content: center; /* Center the label vertically */}
+
+.dropdown-top-labell {
+    font-size: 14px;
+    color: black; /* Label font color */
+    margin-bottom: 5px; /* Space between label and dropdown */
+    font-weight: bold;
+}
+
+.select-wrapper {
+    position: relative; /* Needed to position the custom arrow */
+    display: inline-block; /* Wrap tightly around the select */
+}
+
+/* CLOSED DROPDOWN STYLES */
+.select-wrapper select {
+    width: 212px;
+    height: 29px;
+    background-color: #193441;
+    color: white; /* Text color for selected option/default label */
+    font-size: 14px;
+    padding: 0 30px 0 10px; /* Add padding for text and space for custom arrow */
+    border: none;
+    border-radius: 4px; /* Optional: Slightly rounded corners */
+    cursor: pointer;
+}
+/* CLOSED DROPDOWN STYLES */
+
+
+/* DROPDOWN ARROW */
+/* .select-wrapper::after { */
+   /* content: '\25BC'; /* Unicode character for a down arrow */
+   /* position: absolute;
+   /* top: 50%;
+   /* width: 20px; /* Width of the arrow */
+   /* right: 10px; /* Position from the right edge */
+   /* transform: translateY(-50%);
+   /* color: white; /* Arrow color */
+   /* font-size: 15px; /* Arrow size */
+   /* pointer-events: none; /* Allow clicks to pass through to the select */
+    /* code below disables default arrow for drowdowns */
+   /* appearance: none;
+   /* -webkit-appearance: none; /* For Safari */
+   /* -moz-appearance: none; /* For Firefox */
+/* } */
+/* DROPDOWN ARROW */
+
+
+/* DROPDOWN LIST ITEM STYLES */
+.select-wrapper select option {
+    background-color: #193441; 
+    color: white; 
+    font-size: 14px;
+    padding: 5px 10px; 
+}
+/* DROPDOWN LIST ITEM STYLES */
+
+
+/* FIX: Hover effect not working */
+.select-wrapper select option:hover {
+    background-color: #FFA36C; /* HOVER COLOR ANIMATION  */
+    opacity: 53%; /* Optional: Change opacity on hover */
+    color: #193441; /* Optional: Change text color on hover for contrast */
+}
+/* FIX: Hover effect not working */
+
+
+/* DISABLED DROPDOWN LIST ITEM LABEL */
+.select-wrapper select option:disabled {
+    color: #bbb; 
+}
+/* DISABLED DROPDOWN LIST ITEM LABEL */
+
+.dropdowns-container {
+    margin-bottom: 10px;
+}
+
+.select-wrapper select:focus {
+    outline: none; /* Remove default outline */
+    box-shadow: 0 0 0 2px rgba(25, 52, 65, 0.5); /* Add a custom focus ring */
+}
+/* DROPDOWN CSS END */
+
+/* --- NEW STYLES FOR BUTTONS --- */
+button {
+    /* Default Button Styles */
+    background-color: #3D58A7;
+    border: 1px solid #324B94;
+    color: white;
+    font-size: 11.5px;
+    padding: 5px 10px; /* Adjust padding as needed */
+    font-weight: bold;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease; /* Smooth transition for hover */
+    margin-top: 10px;
+    width: 212px; 
+    height: 33px;
+}
+
+/* Hover and Active (Clicked) Styles */
+button:hover,
+button:active {
+    /* Use RGBA for opacity on color */
+    background-color: rgba(61, 88, 167, 0.75); /* #3D58A7 with 75% opacity */
+    border-color: rgba(50, 75, 148, 0.75); /* #324B94 with 75% opacity */
+    /* Text color remains white (100% opacity) */
+    color: white;
+    /* Ensure overall element opacity is 100% */
+    opacity: 1;
+}
+
+/* Specific styles for the Clear button */
+#temp_clear_btn {
+    background-color: #9F2A2A; /* Default background color */
+    border: 1px solid #9F2A2A; /* Default border color */
+    color: white; /* Default font color */
+}
+
+/* Hover and Active (Clicked) Styles specifically for the Clear button */
+#temp_clear_btn:hover,
+#temp_clear_btn:active {
+    /* Use RGBA for opacity on color */
+    background-color: rgba(159, 42, 42, 0.75); /* #9F2A2A with 75% opacity */
+    border-color: rgba(131, 25, 25, 0.75); /* #831919 with 75% opacity */
+    color: white; /* Keep text color */
+    opacity: 1; /* Ensure overall element opacity is 100% */
+}
+/* --- END NEW STYLES FOR BUTTONS --- */
