@@ -14,13 +14,13 @@
     </head>
     <body>
         <!-- NAV BAR HEADER START-->
-        <center><h3>Crop Recommendation System for Alfonso, Cavite</h3></center>
+        <center><h3 style="color:white;">Crop Recommendation System for Alfonso, Cavite</h3></center>
         <!-- NAV BAR HEADER END -->
 
         <!-- MAP SECTION START -->
         <div id="map"></div>
         <!-- MAP SECTION END -->
-                
+
                 <!-- TEMPERATURE DATA CONTAINER START -->
                 <div class="temperature-box">
                         <p class="main-label">Select a Range of Temperature Data</p>
@@ -30,11 +30,11 @@
                     <div class="input-wrapper">
                         <!-- CURRENT DATE INPUT START -->
                         <label for="curr_date_input" class="input-label">Enter Current Date:</label>
-                        <!-- CURRENT DATE id & name: curr_date_input--> 
+                        <!-- CURRENT DATE id & name: curr_date_input-->
                         <input type="text" id="curr_date_input" name="curr_date_input" placeholder="Enter date">
-                        <!-- CURRENT DATE INPUT END -->   
+                        <!-- CURRENT DATE INPUT END -->
                     </div>
-                        
+
                     <div class="input-wrapper">
                         <!-- CURRENT TEMP INPUT START -->
                         <label for="alfonso_temp_input" class="input-label">Enter Current Temp in Alfonso:</label>
@@ -73,7 +73,7 @@
                         <!-- DROPDOWN DEFAULT LABEL -->
                         <div class="select-wrapper">
                             <!-- MONTH DROPDOWN id & name: month_dropdown -->
-                            <select id="month_dropdown" name="month_dropdown">                            
+                            <select id="month_dropdown" name="month_dropdown">
                                 <option value="" disabled selected>PICK A MONTH</option>
                                 <!-- MONTH DROPDOWN value variable per list item 01-january and it increases till december -->
                                 <option value="01">January</option>
@@ -94,9 +94,9 @@
                 <!-- MONTH SELECTION DROPDOWN START -->
                 </div>
         <!-- TEMPERATURE DATA CONTAINER END -->
-         
+
         <!-- START section: GIS radio-btns -->
-        <div id="map-types">     
+        <div id="map-types">
             <div id="map-type-selection-btns">
                 <p id="body-text">Map Type</p>
                 <input type="radio" id = "topography" name="map-type">
@@ -131,7 +131,12 @@
 
         <script>
             document.addEventListener('DOMContentLoaded', function () {
+                // Initialize the map. Leaflet automatically adds a zoom control
+                // by default to the 'topleft' position.
                 var map = L.map('map');
+
+                // MODIFIED: Set the position of the default zoom control to 'topright'
+                map.zoomControl.setPosition('topright');
 
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     maxZoom: 19,
