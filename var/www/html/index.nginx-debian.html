@@ -236,13 +236,14 @@
                     ];
 
                     function clearActiveOverlays() {
-                        activeOverlayLayers.forEach(layer => {
-                            if (map.hasLayer(layer)) map.removeLayer(layer);
-                        });
-                        activeOverlayLayers = [];
-                        if (activeLegend && map.hasControl(activeLegend)) {
-                            map.removeControl(activeLegend);
-                            activeLegend = null;
+                    activeOverlayLayers.forEach(layer => {
+                        if (map.hasLayer(layer)) map.removeLayer(layer);
+                    });
+                    activeOverlayLayers = [];
+
+                    if (activeLegend) { // If the activeLegend variable exists
+                        map.removeControl(activeLegend); // Leaflet handles it if control wasn't on map
+                        activeLegend = null;
                         }
                     }
 
