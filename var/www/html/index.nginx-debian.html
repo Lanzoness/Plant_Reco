@@ -4,7 +4,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Farmer's Map</title>
-        <link rel="stylesheet" href="styles.css">
+        <link rel="stylesheet" href="styles.css"> <!-- Ensure this path is correct -->
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
         crossorigin=""/>
@@ -32,7 +32,7 @@
                 opacity: 0.7;
             }
             #map {
-                height: 600px;
+                height: 600px; /* Or whatever height you prefer */
                 width: 100%;
             }
         </style>
@@ -91,9 +91,9 @@
                 <label for="topography">Topography</label><br>
                 <input type="radio" id="rain" name="map-type" value="rain">
                 <label for="rain">Rain</label><br>
-                <input type="radio" id = "soil" name="map-type">
+                <input type="radio" id="soil" name="map-type" value="soil"> <!-- Added value attribute -->
                 <label for="soil">Soil</label><br>
-                <input type="radio" id = "temperature" name="map-type">
+                <input type="radio" id="temperature" name="map-type" value="temperature"> <!-- Added value attribute -->
                 <label for="temperature">Temperature</label>
             </div>
         </div>
@@ -109,10 +109,10 @@
             </div>
           </div>
 
-        <script src="temperature-buttons.js"></script>
+        <script src="temperature-buttons.js"></script> <!-- Ensure this path is correct -->
         <script>
             document.addEventListener('DOMContentLoaded', function () {
-                var map = L.map('map'); // Initialize map first, setView later
+                var map = L.map('map');
                 map.zoomControl.setPosition('topright');
 
                 var osmTileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -120,18 +120,13 @@
                     attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 }).addTo(map);
 
-                // --- Global variables for layers that might be referenced later ---
                 var alfonsoBorderLayer;
                 var maskLayer;
                 let activeOverlayLayers = [];
                 let activeLegend;
 
-                // --- Path to Alfonso Boundary GeoJSON ---
-                // Assuming index.html is in /var/www/html/ and geojsons is in /var/www/geojsons/
-                // The path should be relative to index.html
                 const alfonsoBoundaryPath = 'geojsons/Alfonso/alfonso_boundary.geojson';
 
-                // Fetch the Alfonso boundary GeoJSON
                 fetch(alfonsoBoundaryPath)
                     .then(response => {
                         if (!response.ok) {
@@ -140,21 +135,6 @@
                         return response.json();
                     })
                     .then(alfonsoFeatureData => {
-                        // Now that we have alfonsoFeatureData, we can create dependent layers
-
-                        // Validate the fetched GeoJSON structure (simple check)
-                        if (alfonsoFeatureData.type !== "Feature" && alfonsoFeatureData.type !== "FeatureCollection") {
-                             // If it's a FeatureCollection, we might need to extract the first feature
-                             // or ensure your alfonso_boundary.geojson is a single Feature object.
-                             // For now, let's assume it's expected to be a single Feature.
-                             // If it's a FeatureCollection and you only need the first feature:
-                             // if (alfonsoFeatureData.type === "FeatureCollection" && alfonsoFeatureData.features && alfonsoFeatureData.features.length > 0) {
-                             //    alfonsoFeatureData = alfonsoFeatureData.features[0]; // Use the first feature
-                             // } else {
-                                throw new Error('Loaded Alfonso boundary GeoJSON is not a valid Feature or non-empty FeatureCollection.');
-                             // }
-                        }
-                         // If alfonso_boundary.geojson is a FeatureCollection with one feature, extract it:
                         let alfonsoActualFeature = alfonsoFeatureData;
                         if (alfonsoFeatureData.type === "FeatureCollection" && alfonsoFeatureData.features && alfonsoFeatureData.features.length > 0) {
                             alfonsoActualFeature = alfonsoFeatureData.features[0];
@@ -163,53 +143,40 @@
                             throw new Error('Loaded Alfonso boundary GeoJSON is not a valid Feature.');
                         }
 
-
-                        // 1. Create a GeoJSON layer for Alfonso's BORDER (dotted red lines)
-                        alfonsoBorderLayer = L.geoJSON(alfonsoActualFeature, { // Use alfonsoActualFeature
+                        alfonsoBorderLayer = L.geoJSON(alfonsoActualFeature, {
                             style: { color: 'red', weight: 2, opacity: 1, dashArray: '5, 10', fillOpacity: 0 }
                         }).addTo(map);
 
-                        // 2. Create the MASK layer (gray out everything else)
                         var maskGeoJson = { type: "Feature", geometry: { type: "Polygon", coordinates: [ [[-180, -90], [180, -90], [180, 90], [-180, 90], [-180, -90]] ] }};
-
-                        // Add Alfonso's polygon(s) as holes to the mask
                         if (alfonsoActualFeature.geometry && alfonsoActualFeature.geometry.type === "Polygon" && alfonsoActualFeature.geometry.coordinates.length > 0) {
                             maskGeoJson.geometry.coordinates.push(alfonsoActualFeature.geometry.coordinates[0]);
                         } else if (alfonsoActualFeature.geometry && alfonsoActualFeature.geometry.type === "MultiPolygon") {
-                            // Handle MultiPolygon: add each polygon part as a hole
                             alfonsoActualFeature.geometry.coordinates.forEach(polygonCoords => {
-                                maskGeoJson.geometry.coordinates.push(polygonCoords[0]); // Add the exterior ring of this part
+                                maskGeoJson.geometry.coordinates.push(polygonCoords[0]);
                             });
                         } else {
                             console.warn("Alfonso feature is not a Polygon or MultiPolygon, or has no coordinates; cannot create mask hole properly.");
                         }
-
                         maskLayer = L.geoJSON(maskGeoJson, {
                             style: { fillColor: 'gray', fillOpacity: 0.6, stroke: false }
                         }).addTo(map);
+                        alfonsoBorderLayer.bringToFront();
 
-                        alfonsoBorderLayer.bringToFront(); // Ensure border is on top of mask
-
-                        // 3. Set map view to fit Alfonso's boundaries
                         if (alfonsoBorderLayer.getBounds().isValid()) {
                             map.fitBounds(alfonsoBorderLayer.getBounds());
                         } else {
                             console.error("Could not calculate bounds for Alfonso. Setting a default view.");
-                            map.setView([14.1214, 120.8614], 12); // Approx. Alfonso center
+                            map.setView([14.1214, 120.8614], 12);
                         }
-
-                        // Initialize other map type functionalities now that the base boundary is loaded
                         initializeMapTypeControls();
-
                     })
                     .catch(error => {
                         console.error(`Failed to load Alfonso boundary GeoJSON from ${alfonsoBoundaryPath}:`, error);
                         alert(`Critical error: Could not load map boundary for Alfonso. Please check console. Defaulting to wider view.`);
-                        map.setView([12.8797, 121.7740], 6); // Default to a wider view of PH on critical error
+                        map.setView([12.8797, 121.7740], 6);
                     });
 
 
-                // --- Function to initialize map type controls (called after Alfonso boundary is loaded) ---
                 function initializeMapTypeControls() {
                     // --- ELEVATION DATA ---
                     const elevationBands = [
@@ -222,6 +189,7 @@
                         { file: 'geojsons/Topo_Layer/ELEV_BAND_7.geojson', color: '#F44336', label: '601+ m' }
                     ];
 
+                    // --- RAINFALL DATA ---
                     const rainfallColors = ['#31a354','#74c476','#a1d99b','#c7e9c0','#ffffcc','#fed976','#feb24c','#fd8d3c','#fc4e2a','#e31a1c','#b10026'];
                     const rainfallBands = [
                         { file: 'geojsons/Rain_Layer/RAIN_BAND_1.geojson', color: rainfallColors[0], label: '0 - 5 mm' },
@@ -237,19 +205,38 @@
                         { file: 'geojsons/Rain_Layer/RAIN_BAND_11.geojson', color: rainfallColors[10], label: '50+ mm' }
                     ];
 
-                    function clearActiveOverlays() {
-                    activeOverlayLayers.forEach(layer => {
-                        if (map.hasLayer(layer)) map.removeLayer(layer);
-                    });
-                    activeOverlayLayers = [];
+                    // --- MAX TEMPERATURE DATA ---
+                    const maxTempColors = [
+                        '#4CAF50', // Green (Cooler)
+                        '#CDDC39', // Lime
+                        '#FFEB3B', // Yellow
+                        '#FF9800', // Orange
+                        '#F44336'  // Red (Warmer)
+                    ];
+                    const maxTempBands = [
+                        // ENSURE these filenames exist in geojsons/Max_Temp_Layers/
+                        // And that Max_temp_1.json corresponds to the coolest band, Max_temp_5 to the hottest.
+                        // Update the labels to be meaningful.
+                        { file: 'geojsons/Max_Temp_Layers/Max_temp_1.geojson', color: maxTempColors[0], label: '28-28.5°C' },
+                        { file: 'geojsons/Max_Temp_Layers/Max_temp_2.geojson', color: maxTempColors[1], label: '28.5-29°C' },
+                        { file: 'geojsons/Max_Temp_Layers/Max_temp_3.geojson', color: maxTempColors[2], label: '29-29.5°C' },
+                        { file: 'geojsons/Max_Temp_Layers/Max_temp_4.geojson', color: maxTempColors[3], label: '29.5-30°C' },
+                        { file: 'geojsons/Max_Temp_Layers/Max_temp_5.geojson', color: maxTempColors[4], label: '>30°C' }
+                    ];
 
-                    if (activeLegend) { // If the activeLegend variable exists
-                        map.removeControl(activeLegend); // Leaflet handles it if control wasn't on map
-                        activeLegend = null;
+
+                    function clearActiveOverlays() {
+                        activeOverlayLayers.forEach(layer => {
+                            if (map.hasLayer(layer)) map.removeLayer(layer);
+                        });
+                        activeOverlayLayers = [];
+                        if (activeLegend) {
+                            map.removeControl(activeLegend);
+                            activeLegend = null;
                         }
                     }
 
-                    function loadGeoJsonBand(bandInfo) { // Removed layerArray parameter
+                    function loadGeoJsonBand(bandInfo) {
                         return fetch(bandInfo.file)
                             .then(response => {
                                 if (!response.ok) {
@@ -260,17 +247,12 @@
                             })
                             .then(data => {
                                 if (data) {
-                                    const geoJsonLayer = L.geoJSON(data, {
+                                    return L.geoJSON(data, {
                                         style: {
                                             fillColor: bandInfo.color,
-                                            weight: 0.2,
-                                            opacity: 1,
-                                            color: 'grey',
-                                            fillOpacity: 0.7
+                                            weight: 0.2, opacity: 1, color: 'grey', fillOpacity: 0.7
                                         }
                                     });
-                                    // Don't push to activeOverlayLayers here, do it in displayOverlayLayers
-                                    return geoJsonLayer;
                                 }
                                 return null;
                             })
@@ -280,23 +262,22 @@
                             });
                     }
 
-                    function displayOverlayLayers(bandsData, legendTitle) { // Removed targetLayerArray
+                    function displayOverlayLayers(bandsData, legendTitle) {
                         clearActiveOverlays();
-
                         const promises = bandsData.map(band => loadGeoJsonBand(band));
 
                         Promise.all(promises).then((loadedIndividualLayers) => {
                             loadedIndividualLayers.forEach(layer => {
                                 if (layer) {
                                     layer.addTo(map);
-                                    activeOverlayLayers.push(layer); // Add to global active layers
+                                    activeOverlayLayers.push(layer);
                                 }
                             });
 
                             if (map.hasLayer(maskLayer)) maskLayer.bringToFront();
                             if (map.hasLayer(alfonsoBorderLayer)) alfonsoBorderLayer.bringToFront();
 
-                            if (!activeLegend) {
+                            if (!activeLegend && bandsData.length > 0) {
                                 activeLegend = L.control({position: 'bottomright'});
                                 activeLegend.onAdd = function (map) {
                                     var div = L.DomUtil.create('div', 'info legend');
@@ -318,21 +299,27 @@
                     const mapTypeRadios = document.querySelectorAll('input[name="map-type"]');
                     mapTypeRadios.forEach(radio => {
                         radio.addEventListener('change', function() {
-                            clearActiveOverlays();
+                            clearActiveOverlays(); // Clear previous overlays first
                             if (this.checked) {
+                                // Ensure a value attribute is set on your radio buttons in HTML
                                 if (this.value === 'topography') {
                                     displayOverlayLayers(elevationBands, 'Elevation (m)');
                                 } else if (this.value === 'rain') {
                                     displayOverlayLayers(rainfallBands, 'Rainfall (mm)');
+                                } else if (this.value === 'temperature') {
+                                    displayOverlayLayers(maxTempBands, 'Max Temperature');
                                 } else if (this.value === 'soil') {
                                     console.log("Soil map selected - implement display logic");
+                                    // displayOverlayLayers(soilBands, 'Soil Type'); // Example for future soil layers
                                 }
                             }
                         });
                     });
 
+                    // Initialize radio buttons to unchecked state
                     mapTypeRadios.forEach(radio => radio.checked = false);
                     document.querySelectorAll('input[name="crop-selection"]').forEach(radio => radio.checked = false);
+
                 } // End of initializeMapTypeControls
             });
         </script>
