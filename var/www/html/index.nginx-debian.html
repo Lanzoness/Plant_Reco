@@ -110,7 +110,7 @@
         <script src="temperature-buttons.js"></script>
         <script>
             document.addEventListener('DOMContentLoaded', function () {
-                var map = L.map('map');
+                var map = L.map('map'); // Initialize map first, setView later
                 map.zoomControl.setPosition('topright');
 
                 var osmTileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -118,184 +118,219 @@
                     attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 }).addTo(map);
 
-                // Alfonso Boundary and Mask (always visible)
-                const alfonsoFeature = { /* ... your full alfonsoFeature object ... */ };
-                 alfonsoFeature.properties = {"ID_0":177,"ISO":"PHL","NAME_0":"Philippines","ID_1":24,"NAME_1":"Cavite","ID_2":417,"NAME_2":"Alfonso","NL_NAME_2":"","VARNAME_2":"","TYPE_2":"Bayan|Munisipyo","ENGTYPE_2":"Municipality","PROVINCE":"Cavite","REGION":"CALABARZON (Region IV-A)"};
-                alfonsoFeature.geometry = {"type":"Polygon","coordinates":[[[120.847168,14.1586],[120.847603,14.15814],[120.849083,14.15819],[120.850533,14.15793],[120.851051,14.15754],[120.851669,14.15657],[120.851883,14.15601],[120.852173,14.15492],[120.852539,14.15397],[120.852524,14.1539],[120.852943,14.15321],[120.853859,14.15261],[120.856148,14.1518],[120.857399,14.15099],[120.857613,14.15078],[120.858887,14.14985],[120.860252,14.14886],[120.860733,14.14801],[120.861122,14.14752],[120.86216,14.14678],[120.86306,14.14567],[120.863113,14.14449],[120.863297,14.14379],[120.863403,14.14363],[120.864151,14.14261],[120.86441,14.14173],[120.865662,14.14006],[120.866158,14.13863],[120.866821,14.13765],[120.868553,14.13696],[120.869347,14.13633],[120.870216,14.13515],[120.870934,14.13464],[120.871513,14.1339],[120.871986,14.13293],[120.872208,14.13233],[120.872276,14.13203],[120.87265,14.13126],[120.87291,14.13073],[120.873192,14.12969],[120.87339,14.12848],[120.874336,14.12721],[120.874809,14.12642],[120.875923,14.12501],[120.876518,14.12445],[120.877663,14.1238],[120.878967,14.12325],[120.879662,14.12305],[120.879784,14.12295],[120.882843,14.11709],[120.885078,14.11184],[120.887589,14.10611],[120.887993,14.10481],[120.888527,14.10321],[120.888939,14.10245],[120.890503,14.09901],[120.89241,14.09468],[120.894753,14.08895],[120.895767,14.08688],[120.886742,14.08673],[120.883904,14.08595],[120.878143,14.08353],[120.875587,14.08203],[120.864594,14.07677],[120.861794,14.07449],[120.860603,14.07373],[120.859741,14.07257],[120.858994,14.07181],[120.857903,14.07116],[120.856209,14.07038],[120.853828,14.06818],[120.849129,14.06467],[120.84417,14.06133],[120.844116,14.06263],[120.84375,14.0642],[120.843536,14.06493],[120.843269,14.06753],[120.844276,14.07055],[120.844719,14.0728],[120.844254,14.07598],[120.842827,14.07898],[120.842377,14.08072],[120.841537,14.08376],[120.841293,14.08517],[120.839783,14.0866],[120.838577,14.08758],[120.837547,14.08902],[120.83564,14.0903],[120.834396,14.09083],[120.833069,14.09147],[120.832047,14.09199],[120.831032,14.09263],[120.830307,14.0931],[120.829193,14.0948],[120.827904,14.09617],[120.822678,14.09882],[120.820641,14.09941],[120.81945,14.10016],[120.818367,14.10076],[120.817139,14.10282],[120.814278,14.1054],[120.813454,14.10587],[120.812721,14.10643],[120.810417,14.10843],[120.810471,14.11056],[120.810837,14.11201],[120.810532,14.11287],[120.8106,14.11373],[120.810806,14.115],[120.811043,14.11648],[120.811256,14.11809],[120.811523,14.11961],[120.812119,14.12176],[120.813026,14.12445],[120.81295,14.12591],[120.81385,14.12868],[120.813637,14.13122],[120.813263,14.13299],[120.816177,14.13447],[120.816933,14.13628],[120.818542,14.13855],[120.818909,14.13968],[120.820099,14.14198],[120.82164,14.14399],[120.822601,14.14522],[120.82402,14.14688],[120.825821,14.14892],[120.827927,14.15126],[120.828697,14.15205],[120.829582,14.15309],[120.831543,14.15432],[120.833191,14.15615],[120.834061,14.15675],[120.835136,14.15747],[120.835747,14.15787],[120.836922,14.15866],[120.838654,14.15968],[120.840027,14.16028],[120.841499,14.16084],[120.843384,14.16175],[120.845001,14.1624],[120.846428,14.16284],[120.846809,14.16119],[120.846947,14.16087],[120.847069,14.16041],[120.847023,14.15955],[120.847168,14.1586]]]}
-
-                var alfonsoBorderLayer = L.geoJSON(alfonsoFeature, {
-                    style: { color: 'red', weight: 2, opacity: 1, dashArray: '5, 10', fillOpacity: 0 }
-                }).addTo(map);
-
-                var maskGeoJson = { type: "Feature", geometry: { type: "Polygon", coordinates: [ [[-180, -90], [180, -90], [180, 90], [-180, 90], [-180, -90]] ] }};
-                if (alfonsoFeature.geometry.type === "Polygon" && alfonsoFeature.geometry.coordinates.length > 0) {
-                    maskGeoJson.geometry.coordinates.push(alfonsoFeature.geometry.coordinates[0]);
-                }
-                var maskLayer = L.geoJSON(maskGeoJson, {
-                    style: { fillColor: 'gray', fillOpacity: 0.6, stroke: false }
-                }).addTo(map);
-
-                alfonsoBorderLayer.bringToFront();
-
-                if (alfonsoBorderLayer.getBounds().isValid()) {
-                    map.fitBounds(alfonsoBorderLayer.getBounds());
-                } else {
-                    map.setView([14.1214, 120.8614], 12);
-                }
-
-                // --- Data Layer Management ---
-                let activeOverlayLayers = []; // Generic array for current thematic overlays
+                // --- Global variables for layers that might be referenced later ---
+                var alfonsoBorderLayer;
+                var maskLayer;
+                let activeOverlayLayers = [];
                 let activeLegend;
 
-                // --- ELEVATION DATA ---
-                const elevationBands = [
-                    { file: 'geojsons/Topo_Layer/ELEV_BAND_1.geojson', color: '#4CAF50', label: '0 - 100 m' },
-                    { file: 'geojsons/Topo_Layer/ELEV_BAND_2.geojson', color: '#8BC34A', label: '101 - 200 m' },
-                    { file: 'geojsons/Topo_Layer/ELEV_BAND_3.geojson', color: '#CDDC39', label: '201 - 300 m' },
-                    { file: 'geojsons/Topo_Layer/ELEV_BAND_4.geojson', color: '#FFEB3B', label: '301 - 400 m' },
-                    { file: 'geojsons/Topo_Layer/ELEV_BAND_5.geojson', color: '#FFC107', label: '401 - 500 m' },
-                    { file: 'geojsons/Topo_Layer/ELEV_BAND_6.geojson', color: '#FF9800', label: '501 - 600 m' },
-                    { file: 'geojsons/Topo_Layer/ELEV_BAND_7.geojson', color: '#F44336', label: '601+ m' }
-                ];
+                // --- Path to Alfonso Boundary GeoJSON ---
+                // Assuming index.html is in /var/www/html/ and geojsons is in /var/www/geojsons/
+                // The path should be relative to index.html
+                const alfonsoBoundaryPath = 'geojsons/Alfonso/alfonso_boundary.geojson';
 
-                // --- RAINFALL DATA ---
-                // Define a color scale from green to red for 11 steps
-                // Using a more programmatic approach for color generation might be better for many steps
-                // For now, manually defined. Tools like d3-scale or chroma.js can help.
-                const rainfallColors = [
-                    '#31a354', // Dark Green
-                    '#74c476',
-                    '#a1d99b',
-                    '#c7e9c0', // Lightest Green
-                    '#ffffcc', // Pale Yellow (transition)
-                    '#fed976', // Light Orange
-                    '#feb24c',
-                    '#fd8d3c',
-                    '#fc4e2a',
-                    '#e31a1c',
-                    '#b10026'  // Dark Red
-                ];
+                // Fetch the Alfonso boundary GeoJSON
+                fetch(alfonsoBoundaryPath)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status} for ${alfonsoBoundaryPath}`);
+                        }
+                        return response.json();
+                    })
+                    .then(alfonsoFeatureData => {
+                        // Now that we have alfonsoFeatureData, we can create dependent layers
 
-                const rainfallBands = [
-                    // ENSURE these filenames exist in geojsons/Rain_Layer/
-                    // And that RAIN_BAND_1.geojson corresponds to 0-5mm, RAIN_BAND_2 to 5-10mm, etc.
-                    { file: 'geojsons/Rain_Layer/RAIN_BAND_1.geojson', color: rainfallColors[0], label: '0 - 5 mm' },
-                    { file: 'geojsons/Rain_Layer/RAIN_BAND_2.geojson', color: rainfallColors[1], label: '5 - 10 mm' },
-                    { file: 'geojsons/Rain_Layer/RAIN_BAND_3.geojson', color: rainfallColors[2], label: '10 - 15 mm' },
-                    { file: 'geojsons/Rain_Layer/RAIN_BAND_4.geojson', color: rainfallColors[3], label: '15 - 20 mm' },
-                    { file: 'geojsons/Rain_Layer/RAIN_BAND_5.geojson', color: rainfallColors[4], label: '20 - 25 mm' },
-                    { file: 'geojsons/Rain_Layer/RAIN_BAND_6.geojson', color: rainfallColors[5], label: '25 - 30 mm' },
-                    { file: 'geojsons/Rain_Layer/RAIN_BAND_7.geojson', color: rainfallColors[6], label: '30 - 35 mm' },
-                    { file: 'geojsons/Rain_Layer/RAIN_BAND_8.geojson', color: rainfallColors[7], label: '35 - 40 mm' },
-                    { file: 'geojsons/Rain_Layer/RAIN_BAND_9.geojson', color: rainfallColors[8], label: '40 - 45 mm' },
-                    { file: 'geojsons/Rain_Layer/RAIN_BAND_10.geojson', color: rainfallColors[9], label: '45 - 50 mm' },
-                    { file: 'geojsons/Rain_Layer/RAIN_BAND_11.geojson', color: rainfallColors[10], label: '50+ mm' }
-                ];
+                        // Validate the fetched GeoJSON structure (simple check)
+                        if (alfonsoFeatureData.type !== "Feature" && alfonsoFeatureData.type !== "FeatureCollection") {
+                             // If it's a FeatureCollection, we might need to extract the first feature
+                             // or ensure your alfonso_boundary.geojson is a single Feature object.
+                             // For now, let's assume it's expected to be a single Feature.
+                             // If it's a FeatureCollection and you only need the first feature:
+                             // if (alfonsoFeatureData.type === "FeatureCollection" && alfonsoFeatureData.features && alfonsoFeatureData.features.length > 0) {
+                             //    alfonsoFeatureData = alfonsoFeatureData.features[0]; // Use the first feature
+                             // } else {
+                                throw new Error('Loaded Alfonso boundary GeoJSON is not a valid Feature or non-empty FeatureCollection.');
+                             // }
+                        }
+                         // If alfonso_boundary.geojson is a FeatureCollection with one feature, extract it:
+                        let alfonsoActualFeature = alfonsoFeatureData;
+                        if (alfonsoFeatureData.type === "FeatureCollection" && alfonsoFeatureData.features && alfonsoFeatureData.features.length > 0) {
+                            alfonsoActualFeature = alfonsoFeatureData.features[0];
+                             console.log("Using first feature from FeatureCollection for Alfonso boundary.");
+                        } else if (alfonsoFeatureData.type !== "Feature") {
+                            throw new Error('Loaded Alfonso boundary GeoJSON is not a valid Feature.');
+                        }
 
 
-                function clearActiveOverlays() {
-                    activeOverlayLayers.forEach(layer => {
-                        if (map.hasLayer(layer)) map.removeLayer(layer);
+                        // 1. Create a GeoJSON layer for Alfonso's BORDER (dotted red lines)
+                        alfonsoBorderLayer = L.geoJSON(alfonsoActualFeature, { // Use alfonsoActualFeature
+                            style: { color: 'red', weight: 2, opacity: 1, dashArray: '5, 10', fillOpacity: 0 }
+                        }).addTo(map);
+
+                        // 2. Create the MASK layer (gray out everything else)
+                        var maskGeoJson = { type: "Feature", geometry: { type: "Polygon", coordinates: [ [[-180, -90], [180, -90], [180, 90], [-180, 90], [-180, -90]] ] }};
+
+                        // Add Alfonso's polygon(s) as holes to the mask
+                        if (alfonsoActualFeature.geometry && alfonsoActualFeature.geometry.type === "Polygon" && alfonsoActualFeature.geometry.coordinates.length > 0) {
+                            maskGeoJson.geometry.coordinates.push(alfonsoActualFeature.geometry.coordinates[0]);
+                        } else if (alfonsoActualFeature.geometry && alfonsoActualFeature.geometry.type === "MultiPolygon") {
+                            // Handle MultiPolygon: add each polygon part as a hole
+                            alfonsoActualFeature.geometry.coordinates.forEach(polygonCoords => {
+                                maskGeoJson.geometry.coordinates.push(polygonCoords[0]); // Add the exterior ring of this part
+                            });
+                        } else {
+                            console.warn("Alfonso feature is not a Polygon or MultiPolygon, or has no coordinates; cannot create mask hole properly.");
+                        }
+
+                        maskLayer = L.geoJSON(maskGeoJson, {
+                            style: { fillColor: 'gray', fillOpacity: 0.6, stroke: false }
+                        }).addTo(map);
+
+                        alfonsoBorderLayer.bringToFront(); // Ensure border is on top of mask
+
+                        // 3. Set map view to fit Alfonso's boundaries
+                        if (alfonsoBorderLayer.getBounds().isValid()) {
+                            map.fitBounds(alfonsoBorderLayer.getBounds());
+                        } else {
+                            console.error("Could not calculate bounds for Alfonso. Setting a default view.");
+                            map.setView([14.1214, 120.8614], 12); // Approx. Alfonso center
+                        }
+
+                        // Initialize other map type functionalities now that the base boundary is loaded
+                        initializeMapTypeControls();
+
+                    })
+                    .catch(error => {
+                        console.error(`Failed to load Alfonso boundary GeoJSON from ${alfonsoBoundaryPath}:`, error);
+                        alert(`Critical error: Could not load map boundary for Alfonso. Please check console. Defaulting to wider view.`);
+                        map.setView([12.8797, 121.7740], 6); // Default to a wider view of PH on critical error
                     });
-                    activeOverlayLayers = [];
 
-                    if (activeLegend && map.hasControl(activeLegend)) {
-                        map.removeControl(activeLegend);
-                        activeLegend = null;
+
+                // --- Function to initialize map type controls (called after Alfonso boundary is loaded) ---
+                function initializeMapTypeControls() {
+                    // --- ELEVATION DATA ---
+                    const elevationBands = [
+                        { file: 'geojsons/Topo_Layer/ELEV_BAND_1.geojson', color: '#4CAF50', label: '0 - 100 m' },
+                        { file: 'geojsons/Topo_Layer/ELEV_BAND_2.geojson', color: '#8BC34A', label: '101 - 200 m' },
+                        { file: 'geojsons/Topo_Layer/ELEV_BAND_3.geojson', color: '#CDDC39', label: '201 - 300 m' },
+                        { file: 'geojsons/Topo_Layer/ELEV_BAND_4.geojson', color: '#FFEB3B', label: '301 - 400 m' },
+                        { file: 'geojsons/Topo_Layer/ELEV_BAND_5.geojson', color: '#FFC107', label: '401 - 500 m' },
+                        { file: 'geojsons/Topo_Layer/ELEV_BAND_6.geojson', color: '#FF9800', label: '501 - 600 m' },
+                        { file: 'geojsons/Topo_Layer/ELEV_BAND_7.geojson', color: '#F44336', label: '601+ m' }
+                    ];
+
+                    const rainfallColors = ['#31a354','#74c476','#a1d99b','#c7e9c0','#ffffcc','#fed976','#feb24c','#fd8d3c','#fc4e2a','#e31a1c','#b10026'];
+                    const rainfallBands = [
+                        { file: 'geojsons/Rain_Layer/RAIN_BAND_1.geojson', color: rainfallColors[0], label: '0 - 5 mm' },
+                        { file: 'geojsons/Rain_Layer/RAIN_BAND_2.geojson', color: rainfallColors[1], label: '5 - 10 mm' },
+                        { file: 'geojsons/Rain_Layer/RAIN_BAND_3.geojson', color: rainfallColors[2], label: '10 - 15 mm' },
+                        { file: 'geojsons/Rain_Layer/RAIN_BAND_4.geojson', color: rainfallColors[3], label: '15 - 20 mm' },
+                        { file: 'geojsons/Rain_Layer/RAIN_BAND_5.geojson', color: rainfallColors[4], label: '20 - 25 mm' },
+                        { file: 'geojsons/Rain_Layer/RAIN_BAND_6.geojson', color: rainfallColors[5], label: '25 - 30 mm' },
+                        { file: 'geojsons/Rain_Layer/RAIN_BAND_7.geojson', color: rainfallColors[6], label: '30 - 35 mm' },
+                        { file: 'geojsons/Rain_Layer/RAIN_BAND_8.geojson', color: rainfallColors[7], label: '35 - 40 mm' },
+                        { file: 'geojsons/Rain_Layer/RAIN_BAND_9.geojson', color: rainfallColors[8], label: '40 - 45 mm' },
+                        { file: 'geojsons/Rain_Layer/RAIN_BAND_10.geojson', color: rainfallColors[9], label: '45 - 50 mm' },
+                        { file: 'geojsons/Rain_Layer/RAIN_BAND_11.geojson', color: rainfallColors[10], label: '50+ mm' }
+                    ];
+
+                    function clearActiveOverlays() {
+                        activeOverlayLayers.forEach(layer => {
+                            if (map.hasLayer(layer)) map.removeLayer(layer);
+                        });
+                        activeOverlayLayers = [];
+                        if (activeLegend && map.hasControl(activeLegend)) {
+                            map.removeControl(activeLegend);
+                            activeLegend = null;
+                        }
                     }
-                }
 
-                function loadGeoJsonBand(bandInfo, layerArray) {
-                    return fetch(bandInfo.file)
-                        .then(response => {
-                            if (!response.ok) {
-                                console.warn(`Warning: Could not load ${bandInfo.file}. Status: ${response.status}. Band "${bandInfo.label}" will not be displayed.`);
+                    function loadGeoJsonBand(bandInfo) { // Removed layerArray parameter
+                        return fetch(bandInfo.file)
+                            .then(response => {
+                                if (!response.ok) {
+                                    console.warn(`Warning: Could not load ${bandInfo.file}. Status: ${response.status}. Band "${bandInfo.label}" will not be displayed.`);
+                                    return null;
+                                }
+                                return response.json();
+                            })
+                            .then(data => {
+                                if (data) {
+                                    const geoJsonLayer = L.geoJSON(data, {
+                                        style: {
+                                            fillColor: bandInfo.color,
+                                            weight: 0.2,
+                                            opacity: 1,
+                                            color: 'grey',
+                                            fillOpacity: 0.7
+                                        }
+                                    });
+                                    // Don't push to activeOverlayLayers here, do it in displayOverlayLayers
+                                    return geoJsonLayer;
+                                }
                                 return null;
+                            })
+                            .catch(error => {
+                                console.error(`Error processing or fetching band ${bandInfo.file}:`, error);
+                                return null;
+                            });
+                    }
+
+                    function displayOverlayLayers(bandsData, legendTitle) { // Removed targetLayerArray
+                        clearActiveOverlays();
+
+                        const promises = bandsData.map(band => loadGeoJsonBand(band));
+
+                        Promise.all(promises).then((loadedIndividualLayers) => {
+                            loadedIndividualLayers.forEach(layer => {
+                                if (layer) {
+                                    layer.addTo(map);
+                                    activeOverlayLayers.push(layer); // Add to global active layers
+                                }
+                            });
+
+                            if (map.hasLayer(maskLayer)) maskLayer.bringToFront();
+                            if (map.hasLayer(alfonsoBorderLayer)) alfonsoBorderLayer.bringToFront();
+
+                            if (!activeLegend) {
+                                activeLegend = L.control({position: 'bottomright'});
+                                activeLegend.onAdd = function (map) {
+                                    var div = L.DomUtil.create('div', 'info legend');
+                                    div.innerHTML += `<h4>${legendTitle}</h4>`;
+                                    bandsData.forEach(band => {
+                                        div.innerHTML +=
+                                            '<i style="background:' + band.color + '"></i> ' +
+                                            band.label + '<br>';
+                                    });
+                                    return div;
+                                };
+                                activeLegend.addTo(map);
                             }
-                            return response.json();
-                        })
-                        .then(data => {
-                            if (data) {
-                                const geoJsonLayer = L.geoJSON(data, {
-                                    style: {
-                                        fillColor: bandInfo.color,
-                                        weight: 0.2,
-                                        opacity: 1,
-                                        color: 'grey',
-                                        fillOpacity: 0.7
-                                    }
-                                });
-                                layerArray.push(geoJsonLayer); // Add to the specific array (elevation or rain)
-                                return geoJsonLayer;
-                            }
-                            return null;
-                        })
-                        .catch(error => {
-                            console.error(`Error processing or fetching band ${bandInfo.file}:`, error);
-                            return null;
+                        }).catch(error => {
+                            console.error(`General error attempting to load ${legendTitle} layers:`, error);
                         });
-                }
+                    }
 
-                function displayOverlayLayers(bandsData, legendTitle, targetLayerArray) {
-                    clearActiveOverlays(); // Clear any existing overlays first
-
-                    const promises = bandsData.map(band => loadGeoJsonBand(band, targetLayerArray));
-
-                    Promise.all(promises).then((loadedIndividualLayers) => {
-                        // Add successfully loaded layers to the map
-                        loadedIndividualLayers.forEach(layer => {
-                            if (layer) { // Check if the layer was successfully loaded
-                                layer.addTo(map);
-                                activeOverlayLayers.push(layer); // Also add to generic active layers for clearing
+                    const mapTypeRadios = document.querySelectorAll('input[name="map-type"]');
+                    mapTypeRadios.forEach(radio => {
+                        radio.addEventListener('change', function() {
+                            clearActiveOverlays();
+                            if (this.checked) {
+                                if (this.value === 'topography') {
+                                    displayOverlayLayers(elevationBands, 'Elevation (m)');
+                                } else if (this.value === 'rain') {
+                                    displayOverlayLayers(rainfallBands, 'Rainfall (mm)');
+                                } else if (this.value === 'soil') {
+                                    console.log("Soil map selected - implement display logic");
+                                }
                             }
                         });
-
-                        // Ensure mask and border are still on top correctly
-                        if (map.hasLayer(maskLayer)) maskLayer.bringToFront();
-                        if (map.hasLayer(alfonsoBorderLayer)) alfonsoBorderLayer.bringToFront();
-
-                        // Add legend
-                        if (!activeLegend) {
-                            activeLegend = L.control({position: 'bottomright'});
-                            activeLegend.onAdd = function (map) {
-                                var div = L.DomUtil.create('div', 'info legend');
-                                div.innerHTML += `<h4>${legendTitle}</h4>`;
-                                bandsData.forEach(band => {
-                                    div.innerHTML +=
-                                        '<i style="background:' + band.color + '"></i> ' +
-                                        band.label + '<br>';
-                                });
-                                return div;
-                            };
-                            activeLegend.addTo(map);
-                        }
-                    }).catch(error => {
-                        console.error(`General error attempting to load ${legendTitle} layers:`, error);
                     });
-                }
 
-
-                const mapTypeRadios = document.querySelectorAll('input[name="map-type"]');
-                mapTypeRadios.forEach(radio => {
-                    radio.addEventListener('change', function() {
-                        clearActiveOverlays(); // Clear previous overlays when map type changes
-
-                        if (this.checked) {
-                            if (this.value === 'topography') {
-                                displayOverlayLayers(elevationBands, 'Elevation (m)', []); // Pass empty array, loadGeoJsonBand will populate activeOverlayLayers
-                            } else if (this.value === 'rain') {
-                                displayOverlayLayers(rainfallBands, 'Rainfall (mm)', []);
-                            } else if (this.value === 'soil') {
-                                console.log("Soil map selected - implement display logic");
-                                // displayOverlayLayers(soilBands, 'Soil Type', soilBandLayers);
-                            }
-                        }
-                    });
-                });
-
-                mapTypeRadios.forEach(radio => radio.checked = false);
-                document.querySelectorAll('input[name="crop-selection"]').forEach(radio => radio.checked = false);
-
+                    mapTypeRadios.forEach(radio => radio.checked = false);
+                    document.querySelectorAll('input[name="crop-selection"]').forEach(radio => radio.checked = false);
+                } // End of initializeMapTypeControls
             });
         </script>
     </body>
