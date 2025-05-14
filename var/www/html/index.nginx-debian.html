@@ -179,15 +179,23 @@
                     { file: 'geojsons/Soil_Layer/Tagaytay_sandy_loam.geojson', color: soilLayerColors[4], label: 'Tagaytay Sandy Loam' }
                 ];
 
-                const cropSuitability = {
-                    "Chayote": { suitableElevationBands: [5, 6, 7] },
-                    "Papaya": { suitableElevationBands: [1, 2, 3] },
-                    "Cucumber": { suitableElevationBands: [2, 3, 4] },
-                    "Eggplant": { suitableElevationBands: [1, 2, 3, 4] },
-                    "Chili": { suitableElevationBands: [3, 4, 5] }
+                // const cropSuitability = {
+                //     "Chayote": { suitableElevationBands: [5, 6, 7] },
+                //     "Papaya": { suitableElevationBands: [1, 2, 3] },
+                //     "Cucumber": { suitableElevationBands: [2, 3, 4] },
+                //     "Eggplant": { suitableElevationBands: [1, 2, 3, 4] },
+                //     "Chili": { suitableElevationBands: [3, 4, 5] }
+                // };
+
+                const CROP_SUITABILITY_COLORS = {
+                    Suitable: 'green',
+                    Suitable_Limit_Soil: 'orange',
+                    NOT_Suitable: 'red'
                 };
+
                 const SUITABLE_COLOR = 'green';
                 const NOT_SUITABLE_COLOR = 'red';
+                const SUITABLE_LIMIT_SOIL_COLOR = 'orange';
 
                 // --- Helper Functions ---
                 function clearActiveOverlays() {
@@ -236,7 +244,7 @@
                              return null;
                         });
                 }
-                
+
                 function preloadAllElevationBands() {
                      const promises = elevationBandsData.map(bandData => {
                         return fetch(bandData.file)
@@ -299,57 +307,139 @@
                          console.error(`[displayOverlayLayers] Outer Promise.all error for "${legendTitle}" layers:`, error);
                     });
                 }
-                
-                function displayCropSuitability(cropName) {
-                    clearActiveOverlays();
+
+                // function displayCropSuitability(cropName) {
+                //     clearActiveOverlays();
+                //     clearCropSuitabilityDisplay();
+
+                //     const suitabilityInfo = cropSuitability[cropName];
+                //     if (!suitabilityInfo) {
+                //         console.warn(`[displayCropSuitability] No suitability info for crop: "${cropName}"`);
+                //         return;
+                //     }
+
+                //     let someLayerDisplayed = false;
+                //     Object.entries(allElevationBandLayers).forEach(([bandNum, bandObj]) => {
+                //         const bandNumberInt = parseInt(bandNum);
+                //         const isSuitable = suitabilityInfo.suitableElevationBands.includes(bandNumberInt);
+                //         const color = isSuitable ? SUITABLE_COLOR : NOT_SUITABLE_COLOR;
+
+                //         if (bandObj.geojson) {
+                //             if (bandObj.layer && map.hasLayer(bandObj.layer)) {
+                //                 map.removeLayer(bandObj.layer);
+                //             }
+                //             try {
+                //                 bandObj.layer = L.geoJSON(bandObj.geojson, {
+                //                     style: { fillColor: color, weight: 0.2, opacity: 1, color: 'grey', fillOpacity: 0.7 }
+                //                 }).addTo(map);
+                //                 someLayerDisplayed = true;
+                //             } catch (e) {
+                //                 console.error(`[displayCropSuitability] Error creating/adding suitability layer for band ${bandNum}:`, e);
+                //             }
+                //         } else {
+                //             console.warn(`[displayCropSuitability] GeoJSON for elevation band ${bandNum} not preloaded. Cannot display suitability.`);
+                //         }
+                //     });
+
+                //     if (map.hasLayer(maskLayer)) maskLayer.bringToFront();
+                //     if (map.hasLayer(alfonsoBorderLayer)) alfonsoBorderLayer.bringToFront();
+
+                //     if (!cropSuitabilityLegend && someLayerDisplayed) {
+                //         cropSuitabilityLegend = L.control({position: 'bottomright'});
+                //         cropSuitabilityLegend.onAdd = function(map) {
+                //             var div = L.DomUtil.create('div', 'info legend');
+                //             div.innerHTML += `<h4>${cropName} Suitability</h4>`;
+                //             div.innerHTML += `<i class="suitability-i" style="background:${SUITABLE_COLOR}"></i> Suitable<br>`;
+                //             div.innerHTML += `<i class="suitability-i" style="background:${NOT_SUITABLE_COLOR}"></i> Not Suitable`;
+                //             return div;
+                //         };
+                //         cropSuitabilityLegend.addTo(map);
+                //     } else if (!someLayerDisplayed) {
+                //          console.warn(`[displayCropSuitability] No suitability layers displayed for "${cropName}", no legend added.`);
+                //     }
+                // }
+
+
+                function displayChayoteSuitability() {
+                    clearActiveOverlays(); // Clear previous overlays, including map-type overlays.
                     clearCropSuitabilityDisplay();
 
-                    const suitabilityInfo = cropSuitability[cropName];
-                    if (!suitabilityInfo) {
-                        console.warn(`[displayCropSuitability] No suitability info for crop: "${cropName}"`);
-                        return;
-                    }
-                    
-                    let someLayerDisplayed = false;
-                    Object.entries(allElevationBandLayers).forEach(([bandNum, bandObj]) => {
-                        const bandNumberInt = parseInt(bandNum);
-                        const isSuitable = suitabilityInfo.suitableElevationBands.includes(bandNumberInt);
-                        const color = isSuitable ? SUITABLE_COLOR : NOT_SUITABLE_COLOR;
-                        
-                        if (bandObj.geojson) {
-                            if (bandObj.layer && map.hasLayer(bandObj.layer)) {
-                                map.removeLayer(bandObj.layer);
-                            }
-                            try {
-                                bandObj.layer = L.geoJSON(bandObj.geojson, {
-                                    style: { fillColor: color, weight: 0.2, opacity: 1, color: 'grey', fillOpacity: 0.7 }
-                                }).addTo(map);
-                                someLayerDisplayed = true;
-                            } catch (e) {
-                                console.error(`[displayCropSuitability] Error creating/adding suitability layer for band ${bandNum}:`, e);
-                            }
-                        } else {
-                            console.warn(`[displayCropSuitability] GeoJSON for elevation band ${bandNum} not preloaded. Cannot display suitability.`);
+                    const basePath = 'geojsons/Crop_Suitability/Chayote/';
+                    const layers = [
+                        { file: basePath + 'Suitable.geojson', color: CROP_SUITABILITY_COLORS.Suitable, label: 'Suitable', layer: null },
+                        { file: basePath + 'Suitable_Limit_Soil.geojson', color: CROP_SUITABILITY_COLORS.Suitable_Limit_Soil, label: 'Suitable (Limitations With Soil)', layer: null },
+                        { file: basePath + 'NOT_Suitable.geojson', color: CROP_SUITABILITY_COLORS.NOT_Suitable, label: 'Not Suitable', layer: null }
+                    ];
+
+                    const loadAndAddLayer = (layerInfo) => {
+                        return fetch(layerInfo.file)
+                            .then(response => {
+                                if (!response.ok) {
+                                    console.warn(`Failed to load ${layerInfo.file}`);
+                                    return null;
+                                }
+                                return response.json();
+                            })
+                            .then(geojson => {
+                                if (geojson) {
+                                    try {
+                                        const geojsonLayer = L.geoJSON(geojson, {
+                                            style: {
+                                                fillColor: layerInfo.color,
+                                                weight: 0.2,
+                                                opacity: 1,
+                                                color: 'grey',
+                                                fillOpacity: 0.7
+                                            }
+                                        }).addTo(map);
+                                        layerInfo.layer = geojsonLayer; // Store the layer
+                                        activeOverlayLayers.push(geojsonLayer);
+                                        return layerInfo; // Return the layerInfo with the added layer
+                                    } catch (error) {
+                                        console.error(`Error creating GeoJSON layer for ${layerInfo.file}:`, error);
+                                        return null;
+                                    }
+                                }
+                                return null;
+                            })
+                            .catch(error => {
+                                console.error(`Error fetching ${layerInfo.file}:`, error);
+                                return null;
+                            });
+                    };
+
+                    Promise.all(layers.map(loadAndAddLayer))
+                    .then(loadedLayers => {
+                        // After all layers are loaded
+                        const validLayers = loadedLayers.filter(layer => layer !== null);
+                        if (validLayers.length === 0) {
+                            console.warn("No valid layers were loaded.");
+                            return;
                         }
+
+
+                        if (map.hasLayer(maskLayer)) maskLayer.bringToFront();
+                        if (map.hasLayer(alfonsoBorderLayer)) alfonsoBorderLayer.bringToFront();
+
+                        // Create and add the legend
+                        if (!cropSuitabilityLegend) {
+                            cropSuitabilityLegend = L.control({ position: 'bottomright' });
+                            cropSuitabilityLegend.onAdd = function(map) {
+                                const div = L.DomUtil.create('div', 'info legend');
+                                div.innerHTML += '<h4>Chayote Suitability</h4>';
+                                validLayers.forEach(layer => {
+                                    div.innerHTML += `<i class="suitability-i" style="background:${layer.color}"></i> ${layer.label}<br>`;
+                                });
+                                return div;
+                            };
+                            cropSuitabilityLegend.addTo(map);
+                        }
+
+                    }).catch(error => {
+                        console.error("Error in promise chain:", error);
                     });
-
-                    if (map.hasLayer(maskLayer)) maskLayer.bringToFront();
-                    if (map.hasLayer(alfonsoBorderLayer)) alfonsoBorderLayer.bringToFront();
-
-                    if (!cropSuitabilityLegend && someLayerDisplayed) {
-                        cropSuitabilityLegend = L.control({position: 'bottomright'});
-                        cropSuitabilityLegend.onAdd = function(map) {
-                            var div = L.DomUtil.create('div', 'info legend');
-                            div.innerHTML += `<h4>${cropName} Suitability</h4>`;
-                            div.innerHTML += `<i class="suitability-i" style="background:${SUITABLE_COLOR}"></i> Suitable<br>`;
-                            div.innerHTML += `<i class="suitability-i" style="background:${NOT_SUITABLE_COLOR}"></i> Not Suitable`;
-                            return div;
-                        };
-                        cropSuitabilityLegend.addTo(map);
-                    } else if (!someLayerDisplayed) {
-                         console.warn(`[displayCropSuitability] No suitability layers displayed for "${cropName}", no legend added.`);
-                    }
                 }
+
 
                 function initializeMapTypeControls() {
                     const mapTypeRadios = document.querySelectorAll('input[name="map-type"]');
@@ -375,11 +465,32 @@
                     cropRadios.forEach(radio => {
                         radio.addEventListener('change', function() {
                             if (this.checked) {
-                                if (Object.keys(allElevationBandLayers).length !== elevationBandsData.length || 
-                                    Object.values(allElevationBandLayers).some(obj => obj.geojson === null || obj.geojson === undefined)) {
-                                    console.warn("Elevation bands not fully preloaded or some failed. Crop suitability display might be incomplete or inaccurate.");
+                                const cropType = this.value;
+
+                                //Clear other crop overlays first
+                                clearActiveOverlays();
+                                clearCropSuitabilityDisplay();
+
+                                // Handle the selected crop
+                                switch (cropType) {
+                                    case 'Chayote':
+                                        displayChayoteSuitability();
+                                        break;
+                                    case 'Papaya':
+                                    case 'Cucumber':
+                                    case 'Eggplant':
+                                    case 'Chili':
+                                         // For other crops that require elevation band processing
+                                        // if (Object.keys(allElevationBandLayers).length !== elevationBandsData.length ||
+                                        //     Object.values(allElevationBandLayers).some(obj => obj.geojson === null || obj.geojson === undefined)) {
+                                        //     console.warn("Elevation bands not fully preloaded or some failed. Crop suitability display might be incomplete or inaccurate.");
+                                        // }
+                                        // displayCropSuitability(cropType);
+                                        break;
+                                    default:
+                                        console.warn(`No display function defined for crop: ${cropType}`);
+                                        break;
                                 }
-                                displayCropSuitability(this.value);
                             }
                         });
                     });
