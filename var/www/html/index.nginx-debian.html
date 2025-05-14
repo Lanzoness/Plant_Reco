@@ -11,115 +11,85 @@
         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
         crossorigin=""></script>
+        <style>
+            .legend {
+                padding: 6px 8px;
+                font: 14px/16px Arial, Helvetica, sans-serif;
+                background: white;
+                background: rgba(255,255,255,0.8);
+                box-shadow: 0 0 15px rgba(0,0,0,0.2);
+                border-radius: 5px;
+                line-height: 18px;
+                color: #555;
+                max-height: 250px; /* For longer legends */
+                overflow-y: auto;   /* For scrollable legends */
+            }
+            .legend i {
+                width: 18px;
+                height: 18px;
+                float: left;
+                margin-right: 8px;
+                opacity: 0.7;
+            }
+            #map {
+                height: 600px;
+                width: 100%;
+            }
+        </style>
     </head>
     <body>
-        <!-- NAV BAR HEADER START-->
         <center><h3 style="color:white;">Crop Recommendation System for Alfonso, Cavite</h3></center>
-        <!-- NAV BAR HEADER END -->
-
-        <!-- MAP SECTION START -->
         <div id="map"></div>
-        <!-- MAP SECTION END -->
 
-                <!-- TEMPERATURE DATA CONTAINER START -->
-                <div class="temperature-box">
-                        <p class="main-label">Select a Range of Temperature Data</p>
-
-                <!-- TEXTBOX INPUT CONTAINER START -->
-                <div class="inputs-container">
-                    <div class="input-wrapper">
-                    <!-- CURRENT DATE INPUT START -->
-                        <label for="curr_date_input" class="input-label">Enter Current Date:</label>
-                        <!-- CURRENT DATE id & name: curr_date_input-->
-                        <input type="text" id="curr_date_input" name="curr_date_input" placeholder="Enter date">
-                        <!-- CURRENT DATE INPUT END -->
-
-                        <!-- CURRENT DATE BUTTON START -->
-                        <!-- CURRENT DATE id: current_date_btn -->
-                        <button id="current_date_btn">SUBMIT CURRENT DATE</button>
-                        <!-- CURRENT DATE BUTTON END -->
-                    </div>
-                    <!-- CURRENT DATE INPUT CONTAINER END -->
-
-                    <div class="input-wrapper">
-                        <!-- CURRENT TEMP INPUT START -->
-                        <label for="alfonso_temp_input" class="input-label">Enter Current Temp in Alfonso:</label>
-                        <!-- ALFONSO TEMP id & name: alfonso_temp_input -->
-                        <input type="text" id="alfonso_temp_input" name="alfonso_temp_input" placeholder="Enter temperature">
-                        <!-- CURRENT TEMP INPUT END -->
-
-                        <!-- CURRENT TEMP BUTTON START -->
-                         <!-- CURRENT TEMP id: current_temp_btn -->
-                        <button id="current_temp_btn">SUBMIT CURRENT TEMP.</button>
-                        <!-- CURRENT TEMP BUTTON END -->
-                    </div>
-                   <!-- TEXTBOX INPUT CONTAINER END -->
-
+        <div class="temperature-box">
+            <p class="main-label">Select a Range of Temperature Data</p>
+            <div class="inputs-container">
+                <div class="input-wrapper">
+                    <label for="curr_date_input" class="input-label">Enter Current Date:</label>
+                    <input type="text" id="curr_date_input" name="curr_date_input" placeholder="Enter date">
+                    <button id="current_date_btn">SUBMIT CURRENT DATE</button>
                 </div>
-                <!-- END NEW: Inputs Container -->
-
-                <!-- YEAR SELECTION DROPDOWN START -->
-                <div class="dropdowns-container">
-                    <div class="dropdown-wrapper">
-                        <!-- DROPDOWN DEFAULT LABEL -->
-                        <label for="year_dropdown" class="dropdown-top-labell">Pick a Year:</label>
-                        <!-- DROPDOWN DEFAULT LABEL -->
-                        <div class="select-wrapper">
-                            <!-- YEAR DROPDOWN id & name: year_dropdown -->
-                            <select id="year_dropdown" name="year_dropdown">
-                                <option value="" disabled selected>PICK A YEAR</option>
-                                <!-- YERR DROPDOWN value variable is same as year labels -->
-                                <option value="2024">2024</option>
-                                <option value="2023">2023</option>
-                                <option value="2022">2022</option>
-                            </select>
-                        </div>
-                    <!-- CURRENT YEAR & MONTH BUTTON START -->  
-                    <!-- CURRENT YEAR & MONTH id: current_yr_month_btn -->
+                <div class="input-wrapper">
+                    <label for="alfonso_temp_input" class="input-label">Enter Current Temp in Alfonso:</label>
+                    <input type="text" id="alfonso_temp_input" name="alfonso_temp_input" placeholder="Enter temperature">
+                    <button id="current_temp_btn">SUBMIT CURRENT TEMP.</button>
+                </div>
+            </div>
+            <div class="dropdowns-container">
+                <div class="dropdown-wrapper">
+                    <label for="year_dropdown" class="dropdown-top-labell">Pick a Year:</label>
+                    <div class="select-wrapper">
+                        <select id="year_dropdown" name="year_dropdown">
+                            <option value="" disabled selected>PICK A YEAR</option>
+                            <option value="2024">2024</option>
+                            <option value="2023">2023</option>
+                            <option value="2022">2022</option>
+                        </select>
+                    </div>
                     <button id="current_yr_month_btn">SUBMIT YEAR & MONTH</button>
-                    <!-- CURRENT YEAR & MONTH BUTTON END -->
-                    </div>
-                    <!-- YEAR SELECTION DROPDOWN END -->
-
-                    <!-- MONTH SELECTION DROPDOWN START -->
-                    <div class="dropdown-wrapper">
-                        <!-- DROPDOWN DEFAULT LABEL -->
-                        <label for="month_dropdown" class="dropdown-top-labell">Pick a Month:</label>
-                        <!-- DROPDOWN DEFAULT LABEL -->
-                        <div class="select-wrapper">
-                            <!-- MONTH DROPDOWN id & name: month_dropdown -->
-                            <select id="month_dropdown" name="month_dropdown">
-                                <option value="" disabled selected>PICK A MONTH</option>
-                                <!-- MONTH DROPDOWN value variable per list item 01-january and it increases till december -->
-                                <option value="01">January</option>
-                                <option value="02">February</option>
-                                <option value="03">March</option>
-                                <option value="04">April</option>
-                                <option value="05">May</option>
-                                <option value="06">June</option>
-                                <option value="07">July</option>
-                                <option value="08">August</option>
-                                <option value="09">September</option>
-                                <option value="10">October</option>
-                                <option value="11">November</option>
-                                <option value="12">December</option>
-                            </select>
-                        </div>
-                    <!-- CLEAR INPUTS BUTTON START -->
-                    <button id="temp_clear_btn">CLEAR INPUTS</button>
-                    <!-- CLEAR INPUTS BUTTON END -->
-                    </div>
-                <!-- MONTH SELECTION DROPDOWN START -->
                 </div>
-        <!-- TEMPERATURE DATA CONTAINER END -->
+                <div class="dropdown-wrapper">
+                    <label for="month_dropdown" class="dropdown-top-labell">Pick a Month:</label>
+                    <div class="select-wrapper">
+                        <select id="month_dropdown" name="month_dropdown">
+                            <option value="" disabled selected>PICK A MONTH</option>
+                            <option value="01">January</option><option value="02">February</option><option value="03">March</option>
+                            <option value="04">April</option><option value="05">May</option><option value="06">June</option>
+                            <option value="07">July</option><option value="08">August</option><option value="09">September</option>
+                            <option value="10">October</option><option value="11">November</option><option value="12">December</option>
+                        </select>
+                    </div>
+                    <button id="temp_clear_btn">CLEAR INPUTS</button>
+                </div>
+            </div>
+        </div>
 
-        <!-- START section: GIS radio-btns -->
         <div id="map-types">
             <div id="map-type-selection-btns">
                 <p id="body-text">Map Type</p>
-                <input type="radio" id = "topography" name="map-type">
+                <input type="radio" id="topography" name="map-type" value="topography">
                 <label for="topography">Topography</label><br>
-                <input type="radio" id = "rain" name="map-type">
+                <input type="radio" id="rain" name="map-type" value="rain">
                 <label for="rain">Rain</label><br>
                 <input type="radio" id = "soil" name="map-type">
                 <label for="soil">Soil</label><br>
@@ -127,179 +97,243 @@
                 <label for="temperature">Temperature</label>
             </div>
         </div>
-        <!-- START section: GIS radio-btns -->
 
-        <!-- START section: crop radio-btns -->
         <div id="crop-selection">
             <div id="crop-selection-btns">
                 <p id="body-text">Crop Selection</p>
-                <input type="radio" id = "Chayote" name="crop-selection">
-                <label for="Chayote">Chayote</label><br>
-                <input type="radio" id = "Papaya" name="crop-selection">
-                <label for="Papaya">Papaya</label><br>
-                <input type="radio" id = "Cucumber" name="crop-selection">
-                <label for="Cucumber">Cucumber</label><br>
-                <input type="radio" id = "Eggplant" name="crop-selection">
-                <label for="Eggplant">Eggplant</label><br>
-                <input type="radio" id = "Chili" name="crop-selection">
-                <label for="Chili">Chili</label>
+                <input type="radio" id = "Chayote" name="crop-selection"><label for="Chayote">Chayote</label><br>
+                <input type="radio" id = "Papaya" name="crop-selection"><label for="Papaya">Papaya</label><br>
+                <input type="radio" id = "Cucumber" name="crop-selection"><label for="Cucumber">Cucumber</label><br>
+                <input type="radio" id = "Eggplant" name="crop-selection"><label for="Eggplant">Eggplant</label><br>
+                <input type="radio" id = "Chili" name="crop-selection"><label for="Chili">Chili</label>
             </div>
           </div>
-        <!-- END section: crop radio-btns -->
 
-
-<!-- ALL JavaScript related code STARTS HERE -->
-        <script src="temperature-buttons.js"></script> <!-- TEMPERATURE DATA BUTTON JS script tag -->
-        <!-- <script src="temperature-nav-tabs.js"></script> --> <!-- TEMPERATURE DATA TABS JS script tag -->
+        <script src="temperature-buttons.js"></script>
         <script>
             document.addEventListener('DOMContentLoaded', function () {
-                // Initialize the map. Leaflet automatically adds a zoom control
-                // by default to the 'topleft' position.
-                var map = L.map('map');
-
-                // MODIFIED: Set the position of the default zoom control to 'topright'
+                var map = L.map('map'); // Initialize map first, setView later
                 map.zoomControl.setPosition('topright');
 
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                var osmTileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     maxZoom: 19,
                     attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 }).addTo(map);
 
-                // Directly use the GeoJSON Feature for Alfonso, Cavite
-                // Sourced from the snippet you provided (originally from https://github.com/macoymejia/geojsonph/blob/master/MuniCities/MuniCities.json)
-                const alfonsoFeature = {
-                    "type": "Feature",
-                    "properties": {
-                        "ID_0": 177, "ISO": "PHL", "NAME_0": "Philippines", "ID_1": 24, "NAME_1": "Cavite",
-                        "ID_2": 417, "NAME_2": "Alfonso", "NL_NAME_2": "", "VARNAME_2": "",
-                        "TYPE_2": "Bayan|Munisipyo", "ENGTYPE_2": "Municipality", "PROVINCE": "Cavite",
-                        "REGION": "CALABARZON (Region IV-A)"
-                    },
-                    "geometry": {
-                        "type": "Polygon",
-                        "coordinates": [ // Note: This is an array of rings. The first is the exterior.
-                            [
-                                [120.847168, 14.158600], [120.847603, 14.158140], [120.849083, 14.158190],
-                                [120.850533, 14.157930], [120.851051, 14.157540], [120.851669, 14.156570],
-                                [120.851883, 14.156010], [120.852173, 14.154920], [120.852539, 14.153970],
-                                [120.852524, 14.153900], [120.852943, 14.153210], [120.853859, 14.152610],
-                                [120.856148, 14.151800], [120.857399, 14.150990], [120.857613, 14.150780],
-                                [120.858887, 14.149850], [120.860252, 14.148860], [120.860733, 14.148010],
-                                [120.861122, 14.147520], [120.862160, 14.146780], [120.863060, 14.145670],
-                                [120.863113, 14.144490], [120.863297, 14.143790], [120.863403, 14.143630],
-                                [120.864151, 14.142610], [120.864410, 14.141730], [120.865662, 14.140060],
-                                [120.866158, 14.138630], [120.866821, 14.137650], [120.868553, 14.136960],
-                                [120.869347, 14.136330], [120.870216, 14.135150], [120.870934, 14.134640],
-                                [120.871513, 14.133900], [120.871986, 14.132930], [120.872208, 14.132330],
-                                [120.872276, 14.132030], [120.872650, 14.131260], [120.872910, 14.130730],
-                                [120.873192, 14.129690], [120.873390, 14.128480], [120.874336, 14.127210],
-                                [120.874809, 14.126420], [120.875923, 14.125010], [120.876518, 14.124450],
-                                [120.877663, 14.123800], [120.878967, 14.123250], [120.879662, 14.123050],
-                                [120.879784, 14.122950], [120.882843, 14.117090], [120.885078, 14.111840],
-                                [120.887589, 14.106110], [120.887993, 14.104810], [120.888527, 14.103210],
-                                [120.888939, 14.102450], [120.890503, 14.099010], [120.892410, 14.094680],
-                                [120.894753, 14.088950], [120.895767, 14.086880], [120.886742, 14.086730],
-                                [120.883904, 14.085950], [120.878143, 14.083530], [120.875587, 14.082030],
-                                [120.864594, 14.076770], [120.861794, 14.074490], [120.860603, 14.073730],
-                                [120.859741, 14.072570], [120.858994, 14.071810], [120.857903, 14.071160],
-                                [120.856209, 14.070380], [120.853828, 14.068180], [120.849129, 14.064670],
-                                [120.844170, 14.061330], [120.844116, 14.062630], [120.843750, 14.064200],
-                                [120.843536, 14.064930], [120.843269, 14.067530], [120.844276, 14.070550],
-                                [120.844719, 14.072800], [120.844254, 14.075980], [120.842827, 14.078980],
-                                [120.842377, 14.080720], [120.841537, 14.083760], [120.841293, 14.085170],
-                                [120.839783, 14.086600], [120.838577, 14.087580], [120.837547, 14.089020],
-                                [120.835640, 14.090300], [120.834396, 14.090830], [120.833069, 14.091470],
-                                [120.832047, 14.091990], [120.831032, 14.092630], [120.830307, 14.093100],
-                                [120.829193, 14.094800], [120.827904, 14.096170], [120.822678, 14.098820],
-                                [120.820641, 14.099410], [120.819450, 14.100160], [120.818367, 14.100760],
-                                [120.817139, 14.102820], [120.814278, 14.105400], [120.813454, 14.105870],
-                                [120.812721, 14.106430], [120.810417, 14.108430], [120.810471, 14.110560],
-                                [120.810837, 14.112010], [120.810532, 14.112870], [120.810600, 14.113730],
-                                [120.810806, 14.115000], [120.811043, 14.116480], [120.811256, 14.118090],
-                                [120.811523, 14.119610], [120.812119, 14.121760], [120.813026, 14.124450],
-                                [120.812950, 14.125910], [120.813850, 14.128680], [120.813637, 14.131220],
-                                [120.813263, 14.132990], [120.816177, 14.134470], [120.816933, 14.136280],
-                                [120.818542, 14.138550], [120.818909, 14.139680], [120.820099, 14.141980],
-                                [120.821640, 14.143990], [120.822601, 14.145220], [120.824020, 14.146880],
-                                [120.825821, 14.148920], [120.827927, 14.151260], [120.828697, 14.152050],
-                                [120.829582, 14.153090], [120.831543, 14.154320], [120.833191, 14.156150],
-                                [120.834061, 14.156750], [120.835136, 14.157470], [120.835747, 14.157870],
-                                [120.836922, 14.158660], [120.838654, 14.159680], [120.840027, 14.160280],
-                                [120.841499, 14.160840], [120.843384, 14.161750], [120.845001, 14.162400],
-                                [120.846428, 14.162840], [120.846809, 14.161190], [120.846947, 14.160870],
-                                [120.847069, 14.160410], [120.847023, 14.159550], [120.847168, 14.158600]
-                            ]
-                        ]
+                // --- Global variables for layers that might be referenced later ---
+                var alfonsoBorderLayer;
+                var maskLayer;
+                let activeOverlayLayers = [];
+                let activeLegend;
+
+                // --- Path to Alfonso Boundary GeoJSON ---
+                // Assuming index.html is in /var/www/html/ and geojsons is in /var/www/geojsons/
+                // The path should be relative to index.html
+                const alfonsoBoundaryPath = 'geojsons/Alfonso/alfonso_boundary.geojson';
+
+                // Fetch the Alfonso boundary GeoJSON
+                fetch(alfonsoBoundaryPath)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status} for ${alfonsoBoundaryPath}`);
+                        }
+                        return response.json();
+                    })
+                    .then(alfonsoFeatureData => {
+                        // Now that we have alfonsoFeatureData, we can create dependent layers
+
+                        // Validate the fetched GeoJSON structure (simple check)
+                        if (alfonsoFeatureData.type !== "Feature" && alfonsoFeatureData.type !== "FeatureCollection") {
+                             // If it's a FeatureCollection, we might need to extract the first feature
+                             // or ensure your alfonso_boundary.geojson is a single Feature object.
+                             // For now, let's assume it's expected to be a single Feature.
+                             // If it's a FeatureCollection and you only need the first feature:
+                             // if (alfonsoFeatureData.type === "FeatureCollection" && alfonsoFeatureData.features && alfonsoFeatureData.features.length > 0) {
+                             //    alfonsoFeatureData = alfonsoFeatureData.features[0]; // Use the first feature
+                             // } else {
+                                throw new Error('Loaded Alfonso boundary GeoJSON is not a valid Feature or non-empty FeatureCollection.');
+                             // }
+                        }
+                         // If alfonso_boundary.geojson is a FeatureCollection with one feature, extract it:
+                        let alfonsoActualFeature = alfonsoFeatureData;
+                        if (alfonsoFeatureData.type === "FeatureCollection" && alfonsoFeatureData.features && alfonsoFeatureData.features.length > 0) {
+                            alfonsoActualFeature = alfonsoFeatureData.features[0];
+                             console.log("Using first feature from FeatureCollection for Alfonso boundary.");
+                        } else if (alfonsoFeatureData.type !== "Feature") {
+                            throw new Error('Loaded Alfonso boundary GeoJSON is not a valid Feature.');
+                        }
+
+
+                        // 1. Create a GeoJSON layer for Alfonso's BORDER (dotted red lines)
+                        alfonsoBorderLayer = L.geoJSON(alfonsoActualFeature, { // Use alfonsoActualFeature
+                            style: { color: 'red', weight: 2, opacity: 1, dashArray: '5, 10', fillOpacity: 0 }
+                        }).addTo(map);
+
+                        // 2. Create the MASK layer (gray out everything else)
+                        var maskGeoJson = { type: "Feature", geometry: { type: "Polygon", coordinates: [ [[-180, -90], [180, -90], [180, 90], [-180, 90], [-180, -90]] ] }};
+
+                        // Add Alfonso's polygon(s) as holes to the mask
+                        if (alfonsoActualFeature.geometry && alfonsoActualFeature.geometry.type === "Polygon" && alfonsoActualFeature.geometry.coordinates.length > 0) {
+                            maskGeoJson.geometry.coordinates.push(alfonsoActualFeature.geometry.coordinates[0]);
+                        } else if (alfonsoActualFeature.geometry && alfonsoActualFeature.geometry.type === "MultiPolygon") {
+                            // Handle MultiPolygon: add each polygon part as a hole
+                            alfonsoActualFeature.geometry.coordinates.forEach(polygonCoords => {
+                                maskGeoJson.geometry.coordinates.push(polygonCoords[0]); // Add the exterior ring of this part
+                            });
+                        } else {
+                            console.warn("Alfonso feature is not a Polygon or MultiPolygon, or has no coordinates; cannot create mask hole properly.");
+                        }
+
+                        maskLayer = L.geoJSON(maskGeoJson, {
+                            style: { fillColor: 'gray', fillOpacity: 0.6, stroke: false }
+                        }).addTo(map);
+
+                        alfonsoBorderLayer.bringToFront(); // Ensure border is on top of mask
+
+                        // 3. Set map view to fit Alfonso's boundaries
+                        if (alfonsoBorderLayer.getBounds().isValid()) {
+                            map.fitBounds(alfonsoBorderLayer.getBounds());
+                        } else {
+                            console.error("Could not calculate bounds for Alfonso. Setting a default view.");
+                            map.setView([14.1214, 120.8614], 12); // Approx. Alfonso center
+                        }
+
+                        // Initialize other map type functionalities now that the base boundary is loaded
+                        initializeMapTypeControls();
+
+                    })
+                    .catch(error => {
+                        console.error(`Failed to load Alfonso boundary GeoJSON from ${alfonsoBoundaryPath}:`, error);
+                        alert(`Critical error: Could not load map boundary for Alfonso. Please check console. Defaulting to wider view.`);
+                        map.setView([12.8797, 121.7740], 6); // Default to a wider view of PH on critical error
+                    });
+
+
+                // --- Function to initialize map type controls (called after Alfonso boundary is loaded) ---
+                function initializeMapTypeControls() {
+                    // --- ELEVATION DATA ---
+                    const elevationBands = [
+                        { file: 'geojsons/Topo_Layer/ELEV_BAND_1.geojson', color: '#4CAF50', label: '0 - 100 m' },
+                        { file: 'geojsons/Topo_Layer/ELEV_BAND_2.geojson', color: '#8BC34A', label: '101 - 200 m' },
+                        { file: 'geojsons/Topo_Layer/ELEV_BAND_3.geojson', color: '#CDDC39', label: '201 - 300 m' },
+                        { file: 'geojsons/Topo_Layer/ELEV_BAND_4.geojson', color: '#FFEB3B', label: '301 - 400 m' },
+                        { file: 'geojsons/Topo_Layer/ELEV_BAND_5.geojson', color: '#FFC107', label: '401 - 500 m' },
+                        { file: 'geojsons/Topo_Layer/ELEV_BAND_6.geojson', color: '#FF9800', label: '501 - 600 m' },
+                        { file: 'geojsons/Topo_Layer/ELEV_BAND_7.geojson', color: '#F44336', label: '601+ m' }
+                    ];
+
+                    const rainfallColors = ['#31a354','#74c476','#a1d99b','#c7e9c0','#ffffcc','#fed976','#feb24c','#fd8d3c','#fc4e2a','#e31a1c','#b10026'];
+                    const rainfallBands = [
+                        { file: 'geojsons/Rain_Layer/RAIN_BAND_1.geojson', color: rainfallColors[0], label: '0 - 5 mm' },
+                        { file: 'geojsons/Rain_Layer/RAIN_BAND_2.geojson', color: rainfallColors[1], label: '5 - 10 mm' },
+                        { file: 'geojsons/Rain_Layer/RAIN_BAND_3.geojson', color: rainfallColors[2], label: '10 - 15 mm' },
+                        { file: 'geojsons/Rain_Layer/RAIN_BAND_4.geojson', color: rainfallColors[3], label: '15 - 20 mm' },
+                        { file: 'geojsons/Rain_Layer/RAIN_BAND_5.geojson', color: rainfallColors[4], label: '20 - 25 mm' },
+                        { file: 'geojsons/Rain_Layer/RAIN_BAND_6.geojson', color: rainfallColors[5], label: '25 - 30 mm' },
+                        { file: 'geojsons/Rain_Layer/RAIN_BAND_7.geojson', color: rainfallColors[6], label: '30 - 35 mm' },
+                        { file: 'geojsons/Rain_Layer/RAIN_BAND_8.geojson', color: rainfallColors[7], label: '35 - 40 mm' },
+                        { file: 'geojsons/Rain_Layer/RAIN_BAND_9.geojson', color: rainfallColors[8], label: '40 - 45 mm' },
+                        { file: 'geojsons/Rain_Layer/RAIN_BAND_10.geojson', color: rainfallColors[9], label: '45 - 50 mm' },
+                        { file: 'geojsons/Rain_Layer/RAIN_BAND_11.geojson', color: rainfallColors[10], label: '50+ mm' }
+                    ];
+
+                    function clearActiveOverlays() {
+                    activeOverlayLayers.forEach(layer => {
+                        if (map.hasLayer(layer)) map.removeLayer(layer);
+                    });
+                    activeOverlayLayers = [];
+
+                    if (activeLegend) { // If the activeLegend variable exists
+                        map.removeControl(activeLegend); // Leaflet handles it if control wasn't on map
+                        activeLegend = null;
+                        }
                     }
-                };
 
-                if (!alfonsoFeature || !alfonsoFeature.geometry) {
-                    console.error("Alfonso, Cavite GeoJSON data is missing or invalid.");
-                    map.setView([12.8797, 121.7740], 6); // Default to a wider view of PH
-                    alert("Could not load boundary data for Alfonso, Cavite. GeoJSON seems invalid.");
-                    return;
-                }
-
-                // 1. Create a GeoJSON layer for Alfonso's BORDER (dotted red lines)
-                var alfonsoBorderLayer = L.geoJSON(alfonsoFeature, {
-                    style: function (feature) {
-                        return {
-                            color: 'red',       // Red border
-                            weight: 2,          // Border thickness
-                            opacity: 1,
-                            dashArray: '5, 10', // Dotted line (5px line, 10px space)
-                            fillOpacity: 0      // No fill, we only want the border
-                        };
+                    function loadGeoJsonBand(bandInfo) { // Removed layerArray parameter
+                        return fetch(bandInfo.file)
+                            .then(response => {
+                                if (!response.ok) {
+                                    console.warn(`Warning: Could not load ${bandInfo.file}. Status: ${response.status}. Band "${bandInfo.label}" will not be displayed.`);
+                                    return null;
+                                }
+                                return response.json();
+                            })
+                            .then(data => {
+                                if (data) {
+                                    const geoJsonLayer = L.geoJSON(data, {
+                                        style: {
+                                            fillColor: bandInfo.color,
+                                            weight: 0.2,
+                                            opacity: 1,
+                                            color: 'grey',
+                                            fillOpacity: 0.7
+                                        }
+                                    });
+                                    // Don't push to activeOverlayLayers here, do it in displayOverlayLayers
+                                    return geoJsonLayer;
+                                }
+                                return null;
+                            })
+                            .catch(error => {
+                                console.error(`Error processing or fetching band ${bandInfo.file}:`, error);
+                                return null;
+                            });
                     }
-                }).addTo(map);
 
-                // 2. Create the MASK layer (gray out everything else)
-                var maskGeoJson = {
-                    type: "Feature",
-                    geometry: {
-                        type: "Polygon",
-                        coordinates: [
-                            // Outer ring: A large rectangle covering the world (GeoJSON is [lng, lat])
-                            [[-180, -90], [180, -90], [180, 90], [-180, 90], [-180, -90]]
-                        ]
+                    function displayOverlayLayers(bandsData, legendTitle) { // Removed targetLayerArray
+                        clearActiveOverlays();
+
+                        const promises = bandsData.map(band => loadGeoJsonBand(band));
+
+                        Promise.all(promises).then((loadedIndividualLayers) => {
+                            loadedIndividualLayers.forEach(layer => {
+                                if (layer) {
+                                    layer.addTo(map);
+                                    activeOverlayLayers.push(layer); // Add to global active layers
+                                }
+                            });
+
+                            if (map.hasLayer(maskLayer)) maskLayer.bringToFront();
+                            if (map.hasLayer(alfonsoBorderLayer)) alfonsoBorderLayer.bringToFront();
+
+                            if (!activeLegend) {
+                                activeLegend = L.control({position: 'bottomright'});
+                                activeLegend.onAdd = function (map) {
+                                    var div = L.DomUtil.create('div', 'info legend');
+                                    div.innerHTML += `<h4>${legendTitle}</h4>`;
+                                    bandsData.forEach(band => {
+                                        div.innerHTML +=
+                                            '<i style="background:' + band.color + '"></i> ' +
+                                            band.label + '<br>';
+                                    });
+                                    return div;
+                                };
+                                activeLegend.addTo(map);
+                            }
+                        }).catch(error => {
+                            console.error(`General error attempting to load ${legendTitle} layers:`, error);
+                        });
                     }
-                };
 
-                // Add Alfonso's polygon(s) as holes to the mask
-                // Since alfonsoFeature.geometry.type is "Polygon", its coordinates array
-                // contains one exterior ring (alfonsoFeature.geometry.coordinates[0])
-                // and optionally subsequent interior rings (holes within Alfonso itself).
-                // For the mask, we only need the exterior ring to define the hole.
-                if (alfonsoFeature.geometry.type === "Polygon" && alfonsoFeature.geometry.coordinates.length > 0) {
-                    maskGeoJson.geometry.coordinates.push(alfonsoFeature.geometry.coordinates[0]);
-                } else {
-                    console.warn("Alfonso feature is not a simple Polygon or has no coordinates, cannot create mask hole properly.");
-                }
-                // Note: If Alfonso itself could be a MultiPolygon, the logic would need to iterate
-                // through alfonsoFeature.geometry.coordinates, adding each part's exterior ring.
-                // But given your snippet is a single Polygon, this is sufficient.
+                    const mapTypeRadios = document.querySelectorAll('input[name="map-type"]');
+                    mapTypeRadios.forEach(radio => {
+                        radio.addEventListener('change', function() {
+                            clearActiveOverlays();
+                            if (this.checked) {
+                                if (this.value === 'topography') {
+                                    displayOverlayLayers(elevationBands, 'Elevation (m)');
+                                } else if (this.value === 'rain') {
+                                    displayOverlayLayers(rainfallBands, 'Rainfall (mm)');
+                                } else if (this.value === 'soil') {
+                                    console.log("Soil map selected - implement display logic");
+                                }
+                            }
+                        });
+                    });
 
-                L.geoJSON(maskGeoJson, {
-                    style: function() {
-                        return {
-                            fillColor: 'gray',
-                            fillOpacity: 0.6, // Semi-transparent gray
-                            stroke: false     // No border for the mask itself
-                        };
-                    }
-                }).addTo(map);
-
-                // Ensure Alfonso's red border is on top of the gray mask
-                alfonsoBorderLayer.bringToFront();
-
-                // 3. Set map view to fit Alfonso's boundaries
-                if (alfonsoBorderLayer.getBounds().isValid()) {
-                    map.fitBounds(alfonsoBorderLayer.getBounds());
-                } else {
-                    console.error("Could not calculate bounds for Alfonso. Setting a default view.");
-                    map.setView([14.1214, 120.8614], 12); // Approx. Alfonso center
-                }
-
+                    mapTypeRadios.forEach(radio => radio.checked = false);
+                    document.querySelectorAll('input[name="crop-selection"]').forEach(radio => radio.checked = false);
+                } // End of initializeMapTypeControls
             });
         </script>
     </body>
