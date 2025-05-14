@@ -40,7 +40,7 @@ body {
     z-index: 1000;
     background: #C1D8C3;
     width: 200px;      /* Set a wider width */
-    height: 120px;     /* Set a taller height */
+    height: 150px;     /* Set a taller height */
     padding-top: 30px;     /* More internal space */
     padding-left: 10px;     /* More internal space */
     color:black;
@@ -56,7 +56,7 @@ body {
     position: fixed;
     left: 0; /*adjust this to change its placement*/
     right: 0; /* Move to the right side */
-    top: 536px; /*align from top*/
+    top: 567px; /*align from top*/
     z-index: 1000;
     background: #C1D8C3;
     width: 200px;      /* Set a wider width */
