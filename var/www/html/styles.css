@@ -37,7 +37,7 @@ body {
     left: 0; /*adjust this to change its placement*/
     right: 0; /* Move to the right side */
     /* top: 380px; w/temp top alignment */
-    top: 65px;
+    top: 75px;
     z-index: 1000;
     background: #C1D8C3;
     width: 200px;      /* Set a wider width */
@@ -58,7 +58,7 @@ body {
     left: 0; /*adjust this to change its placement*/
     right: 0; /* Move to the right side */
     /* top: 567px; w/temp top alignment */
-    top: 250px;
+    top: 275px;
     z-index: 1000;
     background: #C1D8C3;
     width: 200px;      /* Set a wider width */
