@@ -1,586 +1,591 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Farmer's Map</title>
-        <link rel="stylesheet" href="styles.css"> <!-- Ensure this path is correct -->
-        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-        crossorigin=""/>
-        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-        crossorigin=""></script>
-        <style>
-            .legend {
-                padding: 6px 8px;
-                font: 14px/16px Arial, Helvetica, sans-serif;
-                background: white;
-                background: rgba(255,255,255,0.8);
-                box-shadow: 0 0 15px rgba(0,0,0,0.2);
-                border-radius: 5px;
-                line-height: 18px;
-                color: #555;
-                max-height: 250px; /* For longer legends */
-                overflow-y: auto;   /* For scrollable legends */
-            }
-            .legend i {
-                width: 18px;
-                height: 18px;
-                float: left;
-                margin-right: 8px;
-                opacity: 0.7; /* Adjusted for thematic layers, can be 1 for suitability */
-            }
-            .legend .suitability-i { /* Specific for suitability legend */
-                opacity: 1;
-            }
-            #map {
-                height: 600px; /* Or whatever height you prefer */
-                width: 100%;
-            }
-        </style>
-    </head>
-    <body>
-        <center><h3 style="color:white;">Crop Recommendation System for Alfonso, Cavite</h3></center>
-        <div id="map"></div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmer's Map</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Ensure this path is correct -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+            crossorigin=""></script>
+    <style>
+        .legend {
+            padding: 6px 8px;
+            font: 14px/16px Arial, Helvetica, sans-serif;
+            background: white;
+            background: rgba(255,255,255,0.8);
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            border-radius: 5px;
+            line-height: 18px;
+            color: #555;
+            max-height: 250px; /* For longer legends */
+            overflow-y: auto;   /* For scrollable legends */
+        }
+        .legend i {
+            width: 18px;
+            height: 18px;
+            float: left;
+            margin-right: 8px;
+            opacity: 0.7; /* Adjusted for thematic layers, can be 1 for suitability */
+        }
+        .legend .suitability-i { /* Specific for suitability legend */
+            opacity: 1;
+        }
+        .barangay-label { /* Style for barangay name labels */
+            background-color: transparent !important; /* Leaflet might add its own background */
+            border: none !important;
+            box-shadow: none !important;
+            color: black;
+            font-weight: bold;
+            font-size: 10px; /* Adjust as needed for readability */
+            text-shadow: 1px 1px 2px white, -1px -1px 2px white, 1px -1px 2px white, -1px 1px 2px white; /* Basic halo for better visibility */
+            pointer-events: none; /* Allow clicks to pass through labels to the map */
+        }
+        #map {
+            height: 600px; /* Or whatever height you prefer */
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <center><h3 style="color:white;">Crop Recommendation System for Alfonso, Cavite</h3></center>
+    <div id="map"></div>
 
-        <!-- <div class="temperature-box"> ... your temperature box HTML ... </div> -->
-
-        <div id="map-types">
-            <div id="map-type-selection-btns">
-                <p id="body-text">Map Type Selection</p>
-                <input type="radio" id="topography" name="map-type" value="topography">
-                <label for="topography">Topography</label><br>
-                <input type="radio" id="rain" name="map-type" value="rain">
-                <label for="rain">Rain</label><br>
-                <input type="radio" id="soil" name="map-type" value="soil">
-                <label for="soil">Soil</label><br>
-                <input type="radio" id="temperature" name="map-type" value="temperature">
-                <label for="temperature">Temperature</label>
-            </div>
+    <div id="map-types">
+        <div id="map-type-selection-btns">
+            <p id="body-text">Map Type Selection</p>
+            <input type="radio" id="topography" name="map-type" value="topography">
+            <label for="topography">Topography</label><br>
+            <input type="radio" id="rain" name="map-type" value="rain">
+            <label for="rain">Rain</label><br>
+            <input type="radio" id="soil" name="map-type" value="soil">
+            <label for="soil">Soil</label><br>
+            <input type="radio" id="temperature" name="map-type" value="temperature">
+            <label for="temperature">Temperature</label><br>
+            <input type="radio" id="barangays" name="map-type" value="barangays">
+            <label for="barangays">Barangays</label>
         </div>
+    </div>
 
-        <div id="crop-selection">
-            <div id="crop-selection-btns">
-                <p id="body-text">Crop Selection</p>
-                <input type="radio" id="Chayote" name="crop-selection" value="Chayote"><label for="Chayote">Chayote</label><br>
-                <input type="radio" id="Papaya" name="crop-selection" value="Papaya"><label for="Papaya">Papaya</label><br>
-                <input type="radio" id="Cucumber" name="crop-selection" value="Cucumber"><label for="Cucumber">Cucumber</label><br>
-                <input type="radio" id="Eggplant" name="crop-selection" value="Eggplant"><label for="Eggplant">Eggplant</label><br>
-                <input type="radio" id="Chili" name="crop-selection" value="Chili"><label for="Chili">Chili</label>
-            </div>
-          </div>
+    <div id="crop-selection">
+        <div id="crop-selection-btns">
+            <p id="body-text">Crop Selection</p>
+            <input type="radio" id="Chayote" name="crop-selection" value="Chayote"><label for="Chayote">Chayote</label><br>
+            <input type="radio" id="Papaya" name="crop-selection" value="Papaya"><label for="Papaya">Papaya</label><br>
+            <input type="radio" id="Cucumber" name="crop-selection" value="Cucumber"><label for="Cucumber">Cucumber</label><br>
+            <input type="radio" id="Eggplant" name="crop-selection" value="Eggplant"><label for="Eggplant">Eggplant</label><br>
+            <input type="radio" id="Chili" name="crop-selection" value="Chili"><label for="Chili">Chili</label>
+        </div>
+    </div>
 
-        <script src="temperature-buttons.js"></script> <!-- Ensure this path is correct and the file exists -->
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                var map = L.map('map');
-                map.zoomControl.setPosition('topright');
+    <script src="temperature-buttons.js"></script> <!-- Ensure this path is correct and the file exists -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var map = L.map('map');
+            map.zoomControl.setPosition('topright');
 
-                var osmTileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    maxZoom: 19,
-                    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                }).addTo(map);
+            var osmTileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
 
-                var alfonsoBorderLayer;
-                var maskLayer;
-                let activeOverlayLayers = [];
-                let activeLegend;
-                let allElevationBandLayers = {};
-                let cropSuitabilityLegend;
+            var alfonsoBorderLayer;
+            var maskLayer;
+            let activeOverlayLayers = [];
+            let activeLegend;
+            let allElevationBandLayers = {};
+            let cropSuitabilityLegend;
 
-                const alfonsoBoundaryPath = 'geojsons/Alfonso/alfonso_boundary.geojson';
+            const alfonsoBoundaryPath = 'geojsons/Alfonso/alfonso_boundary.geojson';
+            const barangayGeoJsonPath = 'geojsons/Alfonso/alfonso_barangay.geojson'; // Path for barangay data
 
-                fetch(alfonsoBoundaryPath)
+            fetch(alfonsoBoundaryPath)
+                .then(response => {
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status} for ${alfonsoBoundaryPath}`);
+                    return response.json();
+                })
+                .then(alfonsoFeatureData => {
+                    let alfonsoActualFeature = alfonsoFeatureData;
+                    if (alfonsoFeatureData.type === "FeatureCollection" && alfonsoFeatureData.features && alfonsoFeatureData.features.length > 0) {
+                        alfonsoActualFeature = alfonsoFeatureData.features[0];
+                    } else if (alfonsoFeatureData.type !== "Feature") {
+                        throw new Error('Loaded Alfonso boundary GeoJSON is not a valid Feature.');
+                    }
+                    alfonsoBorderLayer = L.geoJSON(alfonsoActualFeature, { style: { color: 'red', weight: 2, opacity: 1, dashArray: '5, 10', fillOpacity: 0 }}).addTo(map);
+                    var maskGeoJson = { type: "Feature", geometry: { type: "Polygon", coordinates: [ [[-180, -90], [180, -90], [180, 90], [-180, 90], [-180, -90]] ] }};
+                    if (alfonsoActualFeature.geometry && alfonsoActualFeature.geometry.type === "Polygon" && alfonsoActualFeature.geometry.coordinates.length > 0) {
+                        maskGeoJson.geometry.coordinates.push(alfonsoActualFeature.geometry.coordinates[0]);
+                    } else if (alfonsoActualFeature.geometry && alfonsoActualFeature.geometry.type === "MultiPolygon") {
+                        alfonsoActualFeature.geometry.coordinates.forEach(polygonCoords => maskGeoJson.geometry.coordinates.push(polygonCoords[0]));
+                    } else {
+                         console.warn("Alfonso boundary feature is not a Polygon or MultiPolygon, or has no coordinates; cannot create mask hole properly.");
+                    }
+                    maskLayer = L.geoJSON(maskGeoJson, { style: { fillColor: 'gray', fillOpacity: 0.6, stroke: false }}).addTo(map);
+                    alfonsoBorderLayer.bringToFront();
+                    if (alfonsoBorderLayer.getBounds().isValid()) map.fitBounds(alfonsoBorderLayer.getBounds());
+                    else {
+                        console.error("Could not calculate bounds for Alfonso boundary. Setting a default view.");
+                        map.setView([14.1214, 120.8614], 12);
+                    }
+                    
+                    preloadAllElevationBands().then(() => {
+                         initializeMapTypeControls();
+                         initializeCropSelectionControls();
+                    }).catch(error => {
+                        console.error("Error during preloading of elevation bands:", error);
+                         initializeMapTypeControls();
+                         initializeCropSelectionControls();
+                    });
+                })
+                .catch(error => {
+                    console.error(`Failed to load Alfonso boundary:`, error);
+                    alert(`Critical error: Could not load map boundary. Please check console.`);
+                    map.setView([12.8797, 121.7740], 6);
+                    initializeMapTypeControls();
+                    initializeCropSelectionControls();
+                });
+
+            // --- Data Definitions ---
+            const elevationBandsData = [
+                { bandNumber: 1, file: 'geojsons/Topo_Layer/ELEV_BAND_1.geojson', color: '#4CAF50', label: '0 - 100 m' },
+                { bandNumber: 2, file: 'geojsons/Topo_Layer/ELEV_BAND_2.geojson', color: '#8BC34A', label: '101 - 200 m' },
+                { bandNumber: 3, file: 'geojsons/Topo_Layer/ELEV_BAND_3.geojson', color: '#CDDC39', label: '201 - 300 m' },
+                { bandNumber: 4, file: 'geojsons/Topo_Layer/ELEV_BAND_4.geojson', color: '#FFEB3B', label: '301 - 400 m' },
+                { bandNumber: 5, file: 'geojsons/Topo_Layer/ELEV_BAND_5.geojson', color: '#FFC107', label: '401 - 500 m' },
+                { bandNumber: 6, file: 'geojsons/Topo_Layer/ELEV_BAND_6.geojson', color: '#FF9800', label: '501 - 600 m' },
+                { bandNumber: 7, file: 'geojsons/Topo_Layer/ELEV_BAND_7.geojson', color: '#F44336', label: '601+ m' }
+            ];
+            const rainfallColors = ['#31a354','#74c476','#a1d99b','#c7e9c0','#ffffcc','#fed976','#feb24c','#fd8d3c','#fc4e2a','#e31a1c','#b10026'];
+            const rainfallBandsData = [
+                { file: 'geojsons/Rain_Layer/RAIN_BAND_1.geojson', color: rainfallColors[0], label: '0 - 5 mm' },
+                { file: 'geojsons/Rain_Layer/RAIN_BAND_2.geojson', color: rainfallColors[1], label: '5 - 10 mm' },
+                { file: 'geojsons/Rain_Layer/RAIN_BAND_3.geojson', color: rainfallColors[2], label: '10 - 15 mm' },
+                { file: 'geojsons/Rain_Layer/RAIN_BAND_4.geojson', color: rainfallColors[3], label: '15 - 20 mm' },
+                { file: 'geojsons/Rain_Layer/RAIN_BAND_5.geojson', color: rainfallColors[4], label: '20 - 25 mm' },
+                { file: 'geojsons/Rain_Layer/RAIN_BAND_6.geojson', color: rainfallColors[5], label: '25 - 30 mm' },
+                { file: 'geojsons/Rain_Layer/RAIN_BAND_7.geojson', color: rainfallColors[6], label: '30 - 35 mm' },
+                { file: 'geojsons/Rain_Layer/RAIN_BAND_8.geojson', color: rainfallColors[7], label: '35 - 40 mm' },
+                { file: 'geojsons/Rain_Layer/RAIN_BAND_9.geojson', color: rainfallColors[8], label: '40 - 45 mm' },
+                { file: 'geojsons/Rain_Layer/RAIN_BAND_10.geojson', color: rainfallColors[9], label: '45 - 50 mm' },
+                { file: 'geojsons/Rain_Layer/RAIN_BAND_11.geojson', color: rainfallColors[10], label: '50+ mm' }
+            ];
+            const maxTempColors = ['#4CAF50','#CDDC39','#FFEB3B','#FF9800','#F44336'];
+            const maxTempBandsData = [
+                { file: 'geojsons/Max_Temp_Layers/Max_temp_1.geojson', color: maxTempColors[0], label: '28-28.5°C' },
+                { file: 'geojsons/Max_Temp_Layers/Max_temp_2.geojson', color: maxTempColors[1], label: '28.5-29°C' },
+                { file: 'geojsons/Max_Temp_Layers/Max_temp_3.geojson', color: maxTempColors[2], label: '29-29.5°C' },
+                { file: 'geojsons/Max_Temp_Layers/Max_temp_4.geojson', color: maxTempColors[3], label: '29.5-30°C' },
+                { file: 'geojsons/Max_Temp_Layers/Max_temp_5.geojson', color: maxTempColors[4], label: '>30°C' }
+            ];
+            const soilLayerColors = ['#A0522D','#8B4513','#D2B48C','#BC8F8F','#CD853F'];
+            const soilLayersData = [
+                { file: 'geojsons/Soil_Layer/Magallanes_clay_loam.geojson', color: soilLayerColors[0], label: 'Magallanes Clay Loam' },
+                { file: 'geojsons/Soil_Layer/Magallanes_clay_loam_Steep_phase.geojson', color: soilLayerColors[1], label: 'Magallanes Clay Loam (Steep)' },
+                { file: 'geojsons/Soil_Layer/Tagaytay_loam.geojson', color: soilLayerColors[2], label: 'Tagaytay Loam' },
+                { file: 'geojsons/Soil_Layer/Tagaytay_loam_Steep_Phase.geojson', color: soilLayerColors[3], label: 'Tagaytay Loam (Steep)' },
+                { file: 'geojsons/Soil_Layer/Tagaytay_sandy_loam.geojson', color: soilLayerColors[4], label: 'Tagaytay Sandy Loam' }
+            ];
+
+            const CROP_SUITABILITY_COLORS = {
+                Suitable: 'green',
+                Suitable_Limit_Soil: 'orange',
+                NOT_Suitable: 'red'
+            };
+
+            // --- Helper Functions ---
+            function clearActiveOverlays() {
+                activeOverlayLayers.forEach(layer => { if (map.hasLayer(layer)) map.removeLayer(layer); });
+                activeOverlayLayers = [];
+                if (activeLegend) { map.removeControl(activeLegend); activeLegend = null; }
+            }
+            function clearCropSuitabilityDisplay() {
+                Object.values(allElevationBandLayers).forEach(layerObj => {
+                    if (layerObj.layer && map.hasLayer(layerObj.layer)) {
+                        map.removeLayer(layerObj.layer);
+                    }
+                });
+                if (cropSuitabilityLegend) { map.removeControl(cropSuitabilityLegend); cropSuitabilityLegend = null; }
+            }
+
+            function loadGeoJsonBand(bandInfo) {
+                return fetch(bandInfo.file)
                     .then(response => {
-                        if (!response.ok) throw new Error(`HTTP error! status: ${response.status} for ${alfonsoBoundaryPath}`);
-                        return response.json();
+                        if (!response.ok) {
+                            console.warn(`[loadGeoJsonBand] Could not load ${bandInfo.file}. Status: ${response.status}.`);
+                            return null;
+                        }
+                        return response.json()
+                            .catch(jsonError => {
+                                console.error(`[loadGeoJsonBand] Failed to parse JSON for ${bandInfo.file}:`, jsonError);
+                                return null;
+                            });
                     })
-                    .then(alfonsoFeatureData => {
-                        let alfonsoActualFeature = alfonsoFeatureData;
-                        if (alfonsoFeatureData.type === "FeatureCollection" && alfonsoFeatureData.features && alfonsoFeatureData.features.length > 0) {
-                            alfonsoActualFeature = alfonsoFeatureData.features[0];
-                        } else if (alfonsoFeatureData.type !== "Feature") {
-                            throw new Error('Loaded Alfonso boundary GeoJSON is not a valid Feature.');
-                        }
-                        alfonsoBorderLayer = L.geoJSON(alfonsoActualFeature, { style: { color: 'red', weight: 2, opacity: 1, dashArray: '5, 10', fillOpacity: 0 }}).addTo(map);
-                        var maskGeoJson = { type: "Feature", geometry: { type: "Polygon", coordinates: [ [[-180, -90], [180, -90], [180, 90], [-180, 90], [-180, -90]] ] }};
-                        if (alfonsoActualFeature.geometry && alfonsoActualFeature.geometry.type === "Polygon" && alfonsoActualFeature.geometry.coordinates.length > 0) {
-                            maskGeoJson.geometry.coordinates.push(alfonsoActualFeature.geometry.coordinates[0]);
-                        } else if (alfonsoActualFeature.geometry && alfonsoActualFeature.geometry.type === "MultiPolygon") {
-                            alfonsoActualFeature.geometry.coordinates.forEach(polygonCoords => maskGeoJson.geometry.coordinates.push(polygonCoords[0]));
-                        } else {
-                             console.warn("Alfonso boundary feature is not a Polygon or MultiPolygon, or has no coordinates; cannot create mask hole properly.");
-                        }
-                        maskLayer = L.geoJSON(maskGeoJson, { style: { fillColor: 'gray', fillOpacity: 0.6, stroke: false }}).addTo(map);
-                        alfonsoBorderLayer.bringToFront();
-                        if (alfonsoBorderLayer.getBounds().isValid()) map.fitBounds(alfonsoBorderLayer.getBounds());
-                        else {
-                            console.error("Could not calculate bounds for Alfonso boundary. Setting a default view.");
-                            map.setView([14.1214, 120.8614], 12);
-                        }
-                        
-                        preloadAllElevationBands().then(() => {
-                             // console.log("All elevation bands preloaded for crop suitability."); // Optional: keep for one-time check
-                             initializeMapTypeControls();
-                             initializeCropSelectionControls();
-                        }).catch(error => {
-                            console.error("Error during preloading of elevation bands:", error);
-                             initializeMapTypeControls();
-                             initializeCropSelectionControls();
-                        });
-                    })
-                    .catch(error => {
-                        console.error(`Failed to load Alfonso boundary:`, error);
-                        alert(`Critical error: Could not load map boundary. Please check console.`);
-                        map.setView([12.8797, 121.7740], 6);
-                        initializeMapTypeControls();
-                        initializeCropSelectionControls();
-                    });
-
-                // --- Data Definitions ---
-                const elevationBandsData = [
-                    { bandNumber: 1, file: 'geojsons/Topo_Layer/ELEV_BAND_1.geojson', color: '#4CAF50', label: '0 - 100 m' },
-                    { bandNumber: 2, file: 'geojsons/Topo_Layer/ELEV_BAND_2.geojson', color: '#8BC34A', label: '101 - 200 m' },
-                    { bandNumber: 3, file: 'geojsons/Topo_Layer/ELEV_BAND_3.geojson', color: '#CDDC39', label: '201 - 300 m' },
-                    { bandNumber: 4, file: 'geojsons/Topo_Layer/ELEV_BAND_4.geojson', color: '#FFEB3B', label: '301 - 400 m' },
-                    { bandNumber: 5, file: 'geojsons/Topo_Layer/ELEV_BAND_5.geojson', color: '#FFC107', label: '401 - 500 m' },
-                    { bandNumber: 6, file: 'geojsons/Topo_Layer/ELEV_BAND_6.geojson', color: '#FF9800', label: '501 - 600 m' },
-                    { bandNumber: 7, file: 'geojsons/Topo_Layer/ELEV_BAND_7.geojson', color: '#F44336', label: '601+ m' }
-                ];
-                const rainfallColors = ['#31a354','#74c476','#a1d99b','#c7e9c0','#ffffcc','#fed976','#feb24c','#fd8d3c','#fc4e2a','#e31a1c','#b10026'];
-                const rainfallBandsData = [
-                    { file: 'geojsons/Rain_Layer/RAIN_BAND_1.geojson', color: rainfallColors[0], label: '0 - 5 mm' },
-                    { file: 'geojsons/Rain_Layer/RAIN_BAND_2.geojson', color: rainfallColors[1], label: '5 - 10 mm' },
-                    { file: 'geojsons/Rain_Layer/RAIN_BAND_3.geojson', color: rainfallColors[2], label: '10 - 15 mm' },
-                    { file: 'geojsons/Rain_Layer/RAIN_BAND_4.geojson', color: rainfallColors[3], label: '15 - 20 mm' },
-                    { file: 'geojsons/Rain_Layer/RAIN_BAND_5.geojson', color: rainfallColors[4], label: '20 - 25 mm' },
-                    { file: 'geojsons/Rain_Layer/RAIN_BAND_6.geojson', color: rainfallColors[5], label: '25 - 30 mm' },
-                    { file: 'geojsons/Rain_Layer/RAIN_BAND_7.geojson', color: rainfallColors[6], label: '30 - 35 mm' },
-                    { file: 'geojsons/Rain_Layer/RAIN_BAND_8.geojson', color: rainfallColors[7], label: '35 - 40 mm' },
-                    { file: 'geojsons/Rain_Layer/RAIN_BAND_9.geojson', color: rainfallColors[8], label: '40 - 45 mm' },
-                    { file: 'geojsons/Rain_Layer/RAIN_BAND_10.geojson', color: rainfallColors[9], label: '45 - 50 mm' },
-                    { file: 'geojsons/Rain_Layer/RAIN_BAND_11.geojson', color: rainfallColors[10], label: '50+ mm' }
-                ];
-                const maxTempColors = ['#4CAF50','#CDDC39','#FFEB3B','#FF9800','#F44336'];
-                const maxTempBandsData = [
-                    { file: 'geojsons/Max_Temp_Layers/Max_temp_1.geojson', color: maxTempColors[0], label: '28-28.5°C' },
-                    { file: 'geojsons/Max_Temp_Layers/Max_temp_2.geojson', color: maxTempColors[1], label: '28.5-29°C' },
-                    { file: 'geojsons/Max_Temp_Layers/Max_temp_3.geojson', color: maxTempColors[2], label: '29-29.5°C' },
-                    { file: 'geojsons/Max_Temp_Layers/Max_temp_4.geojson', color: maxTempColors[3], label: '29.5-30°C' },
-                    { file: 'geojsons/Max_Temp_Layers/Max_temp_5.geojson', color: maxTempColors[4], label: '>30°C' }
-                ];
-                const soilLayerColors = ['#A0522D','#8B4513','#D2B48C','#BC8F8F','#CD853F'];
-                const soilLayersData = [
-                    { file: 'geojsons/Soil_Layer/Magallanes_clay_loam.geojson', color: soilLayerColors[0], label: 'Magallanes Clay Loam' },
-                    { file: 'geojsons/Soil_Layer/Magallanes_clay_loam_Steep_phase.geojson', color: soilLayerColors[1], label: 'Magallanes Clay Loam (Steep)' },
-                    { file: 'geojsons/Soil_Layer/Tagaytay_loam.geojson', color: soilLayerColors[2], label: 'Tagaytay Loam' },
-                    { file: 'geojsons/Soil_Layer/Tagaytay_loam_Steep_Phase.geojson', color: soilLayerColors[3], label: 'Tagaytay Loam (Steep)' },
-                    { file: 'geojsons/Soil_Layer/Tagaytay_sandy_loam.geojson', color: soilLayerColors[4], label: 'Tagaytay Sandy Loam' }
-                ];
-
-                // const cropSuitability = {
-                //     "Chayote": { suitableElevationBands: [5, 6, 7] },
-                //     "Papaya": { suitableElevationBands: [1, 2, 3] },
-                //     "Cucumber": { suitableElevationBands: [2, 3, 4] },
-                //     "Eggplant": { suitableElevationBands: [1, 2, 3, 4] },
-                //     "Chili": { suitableElevationBands: [3, 4, 5] }
-                // };
-
-                const CROP_SUITABILITY_COLORS = {
-                    Suitable: 'green',
-                    Suitable_Limit_Soil: 'orange',
-                    NOT_Suitable: 'red'
-                };
-
-                const SUITABLE_COLOR = 'green';
-                const NOT_SUITABLE_COLOR = 'red';
-                const SUITABLE_LIMIT_SOIL_COLOR = 'orange';
-
-                // --- Helper Functions ---
-                function clearActiveOverlays() {
-                    activeOverlayLayers.forEach(layer => { if (map.hasLayer(layer)) map.removeLayer(layer); });
-                    activeOverlayLayers = [];
-                    if (activeLegend) { map.removeControl(activeLegend); activeLegend = null; }
-                }
-                function clearCropSuitabilityDisplay() {
-                    Object.values(allElevationBandLayers).forEach(layerObj => {
-                        if (layerObj.layer && map.hasLayer(layerObj.layer)) {
-                            map.removeLayer(layerObj.layer);
-                        }
-                    });
-                    if (cropSuitabilityLegend) { map.removeControl(cropSuitabilityLegend); cropSuitabilityLegend = null; }
-                }
-
-                function loadGeoJsonBand(bandInfo) {
-                    return fetch(bandInfo.file)
-                        .then(response => {
-                            if (!response.ok) {
-                                console.warn(`[loadGeoJsonBand] Could not load ${bandInfo.file}. Status: ${response.status}.`);
+                    .then(data => {
+                        if (data) {
+                            try {
+                                const layer = L.geoJSON(data, {
+                                    style: { fillColor: bandInfo.color, weight: 0.2, opacity: 1, color: 'grey', fillOpacity: 0.7 }
+                                });
+                                return layer;
+                            } catch (e) {
+                                console.error(`[loadGeoJsonBand] Error CREATING Leaflet layer for ${bandInfo.file}:`, e, "Data was:", data);
                                 return null;
                             }
-                            return response.json()
-                                .catch(jsonError => {
-                                    console.error(`[loadGeoJsonBand] Failed to parse JSON for ${bandInfo.file}:`, jsonError);
-                                    return null;
-                                });
+                        }
+                        return null;
+                    })
+                    .catch(error => {
+                         console.error(`[loadGeoJsonBand] General fetch/process error for ${bandInfo.file}:`, error);
+                         return null;
+                    });
+            }
+
+            function preloadAllElevationBands() {
+                 const promises = elevationBandsData.map(bandData => {
+                    return fetch(bandData.file)
+                        .then(response => {
+                            if (!response.ok) throw new Error(`Failed to load ${bandData.file} during preload. Status: ${response.status}`);
+                            return response.json();
                         })
-                        .then(data => {
-                            if (data) {
+                        .then(geojson => {
+                            allElevationBandLayers[bandData.bandNumber] = {
+                                geojson: geojson,
+                                originalColor: bandData.color,
+                                layer: null
+                            };
+                        })
+                        .catch(error => {
+                            console.error(`[preloadAllElevationBands] Failed to preload ${bandData.file}:`, error);
+                        });
+                });
+                return Promise.all(promises.map(p => p.catch(e => e)));
+            }
+
+            function displayOverlayLayers(bandsData, legendTitle) {
+                clearActiveOverlays();
+                clearCropSuitabilityDisplay();
+
+                const promises = bandsData.map(band => loadGeoJsonBand(band));
+
+                Promise.all(promises).then((loadedIndividualLayers) => {
+                    let layersAddedToMap = 0;
+                    loadedIndividualLayers.forEach((layer, index) => {
+                        if (layer) {
+                            try {
+                                layer.addTo(map);
+                                activeOverlayLayers.push(layer);
+                                layersAddedToMap++;
+                            } catch (e) {
+                                console.error(`[displayOverlayLayers] Error ADDING layer to map for "${legendTitle}" - ${bandsData[index].label}:`, e, layer);
+                            }
+                        }
+                    });
+
+                    if (map.hasLayer(maskLayer)) maskLayer.bringToFront();
+                    if (map.hasLayer(alfonsoBorderLayer)) alfonsoBorderLayer.bringToFront();
+
+                    if (!activeLegend && bandsData.length > 0 && layersAddedToMap > 0) {
+                        activeLegend = L.control({position: 'bottomright'});
+                        activeLegend.onAdd = function (map) {
+                            var div = L.DomUtil.create('div', 'info legend');
+                            div.innerHTML += `<h4>${legendTitle}</h4>`;
+                            bandsData.forEach(band => { div.innerHTML += `<i style="background:${band.color}"></i> ${band.label}<br>`; });
+                            return div;
+                        };
+                        activeLegend.addTo(map);
+                    } else if (layersAddedToMap === 0 && bandsData.length > 0) {
+                         console.warn(`[displayOverlayLayers] No layers were successfully loaded or added for "${legendTitle}", so no legend displayed.`);
+                    }
+                }).catch(error => {
+                     console.error(`[displayOverlayLayers] Outer Promise.all error for "${legendTitle}" layers:`, error);
+                });
+            }
+            
+            function displayBarangayLayer() {
+                clearActiveOverlays();
+                clearCropSuitabilityDisplay();
+
+                fetch(barangayGeoJsonPath) // Uses the global barangayGeoJsonPath
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status} for ${barangayGeoJsonPath}`);
+                        }
+                        return response.json();
+                    })
+                    .then(barangayData => {
+                        const barangayLayer = L.geoJSON(barangayData, {
+                            style: function(feature) {
+                                return {
+                                    fillColor: '#B0E0E6', // Powder Blue
+                                    weight: 1,
+                                    opacity: 1,
+                                    color: 'black',       // Border color for barangays
+                                    fillOpacity: 0.5
+                                };
+                            },
+                            onEachFeature: function (feature, layer) {
+                                if (feature.properties && feature.properties.adm4_en) {
+                                    layer.bindTooltip(feature.properties.adm4_en, {
+                                        permanent: true,      // Makes the tooltip always visible
+                                        direction: 'center',  // Tries to place tooltip at the center of the polygon
+                                        className: 'barangay-label', // Apply custom CSS
+                                        offset: L.point(0, 0) // Adjust offset if needed
+                                    }); // .openTooltip() is not strictly necessary here, Leaflet handles it for permanent tooltips
+                                }
+                            }
+                        }).addTo(map);
+
+                        activeOverlayLayers.push(barangayLayer);
+
+                        if (map.hasLayer(maskLayer)) maskLayer.bringToFront();
+                        if (map.hasLayer(alfonsoBorderLayer)) alfonsoBorderLayer.bringToFront();
+
+                        if (!activeLegend) {
+                            activeLegend = L.control({position: 'bottomright'});
+                            activeLegend.onAdd = function (map) {
+                                var div = L.DomUtil.create('div', 'info legend');
+                                div.innerHTML += `<h4>Barangay Information</h4>`;
+                                div.innerHTML += `<i style="background:#B0E0E6; opacity:0.5"></i> Barangay Area<br>`;
+                                div.innerHTML += `<b>Labels:</b> Barangay Names`;
+                                return div;
+                            };
+                            activeLegend.addTo(map);
+                        }
+                    })
+                    .catch(error => {
+                        console.error(`Failed to load or display barangay layer:`, error);
+                        alert(`Could not load barangay data. Path: ${barangayGeoJsonPath}. Please check console and file path.`);
+                    });
+            }
+
+
+            function displayChayoteSuitability() {
+                clearActiveOverlays();
+                clearCropSuitabilityDisplay();
+
+                const basePath = 'geojsons/Crop_Suitability/Chayote/';
+                const layers = [
+                    { file: basePath + 'Suitable.geojson', color: CROP_SUITABILITY_COLORS.Suitable, label: 'Suitable', layer: null },
+                    { file: basePath + 'Suitable_Limit_Soil.geojson', color: CROP_SUITABILITY_COLORS.Suitable_Limit_Soil, label: 'Suitable (Limitations With Soil)', layer: null },
+                    { file: basePath + 'NOT_Suitable.geojson', color: CROP_SUITABILITY_COLORS.NOT_Suitable, label: 'Not Suitable', layer: null }
+                ];
+
+                const loadAndAddLayer = (layerInfo) => {
+                    return fetch(layerInfo.file)
+                        .then(response => {
+                            if (!response.ok) {
+                                console.warn(`Failed to load ${layerInfo.file}`);
+                                return null;
+                            }
+                            return response.json();
+                        })
+                        .then(geojson => {
+                            if (geojson) {
                                 try {
-                                    const layer = L.geoJSON(data, {
-                                        style: { fillColor: bandInfo.color, weight: 0.2, opacity: 1, color: 'grey', fillOpacity: 0.7 }
-                                    });
-                                    return layer;
-                                } catch (e) {
-                                    console.error(`[loadGeoJsonBand] Error CREATING Leaflet layer for ${bandInfo.file}:`, e, "Data was:", data);
+                                    const geojsonLayer = L.geoJSON(geojson, {
+                                        style: {
+                                            fillColor: layerInfo.color,
+                                            weight: 0.2,
+                                            opacity: 1,
+                                            color: 'grey',
+                                            fillOpacity: 0.7
+                                        }
+                                    }).addTo(map);
+                                    layerInfo.layer = geojsonLayer; 
+                                    activeOverlayLayers.push(geojsonLayer); // Manage these layers too
+                                    return layerInfo; 
+                                } catch (error) {
+                                    console.error(`Error creating GeoJSON layer for ${layerInfo.file}:`, error);
                                     return null;
                                 }
                             }
                             return null;
                         })
                         .catch(error => {
-                             console.error(`[loadGeoJsonBand] General fetch/process error for ${bandInfo.file}:`, error);
-                             return null;
+                            console.error(`Error fetching ${layerInfo.file}:`, error);
+                            return null;
                         });
-                }
+                };
 
-                function preloadAllElevationBands() {
-                     const promises = elevationBandsData.map(bandData => {
-                        return fetch(bandData.file)
-                            .then(response => {
-                                if (!response.ok) throw new Error(`Failed to load ${bandData.file} during preload. Status: ${response.status}`);
-                                return response.json();
-                            })
-                            .then(geojson => {
-                                allElevationBandLayers[bandData.bandNumber] = {
-                                    geojson: geojson,
-                                    originalColor: bandData.color,
-                                    layer: null
-                                };
-                            })
-                            .catch(error => {
-                                console.error(`[preloadAllElevationBands] Failed to preload ${bandData.file}:`, error);
+                Promise.all(layers.map(loadAndAddLayer))
+                .then(loadedLayers => {
+                    const validLayers = loadedLayers.filter(layer => layer !== null);
+                    if (validLayers.length === 0) {
+                        console.warn("No valid Chayote suitability layers were loaded.");
+                        return;
+                    }
+
+                    if (map.hasLayer(maskLayer)) maskLayer.bringToFront();
+                    if (map.hasLayer(alfonsoBorderLayer)) alfonsoBorderLayer.bringToFront();
+
+                    if (!cropSuitabilityLegend) {
+                        cropSuitabilityLegend = L.control({ position: 'bottomright' });
+                        cropSuitabilityLegend.onAdd = function(map) {
+                            const div = L.DomUtil.create('div', 'info legend');
+                            div.innerHTML += '<h4>Chayote Suitability</h4>';
+                            validLayers.forEach(layer => {
+                                div.innerHTML += `<i class="suitability-i" style="background:${layer.color}"></i> ${layer.label}<br>`;
                             });
-                    });
-                    return Promise.all(promises.map(p => p.catch(e => e)));
-                }
+                            return div;
+                        };
+                        cropSuitabilityLegend.addTo(map);
+                    }
 
-                function displayOverlayLayers(bandsData, legendTitle) {
-                    clearActiveOverlays();
-                    clearCropSuitabilityDisplay();
+                }).catch(error => {
+                    console.error("Error in Chayote suitability promise chain:", error);
+                });
+            }
 
-                    const promises = bandsData.map(band => loadGeoJsonBand(band));
+            function displayPapayaSuitability() {
+                clearActiveOverlays(); 
+                clearCropSuitabilityDisplay();
 
-                    Promise.all(promises).then((loadedIndividualLayers) => {
-                        let layersAddedToMap = 0;
-                        loadedIndividualLayers.forEach((layer, index) => {
-                            if (layer) {
+                const basePath = 'geojsons/Crop_Suitability/Papaya/';
+                const layers = [
+                    { file: basePath + 'Suitable.geojson', color: CROP_SUITABILITY_COLORS.Suitable, label: 'Suitable', layer: null },
+                    { file: basePath + 'Suitable_Limit_Soil.geojson', color: CROP_SUITABILITY_COLORS.Suitable_Limit_Soil, label: 'Suitable (Limitations With Soil)', layer: null }
+                ];
+
+                const loadAndAddLayer = (layerInfo) => {
+                    return fetch(layerInfo.file)
+                        .then(response => {
+                            if (!response.ok) {
+                                console.warn(`Failed to load ${layerInfo.file}`);
+                                return null;
+                            }
+                            return response.json();
+                        })
+                        .then(geojson => {
+                            if (geojson) {
                                 try {
-                                    layer.addTo(map);
-                                    activeOverlayLayers.push(layer);
-                                    layersAddedToMap++;
-                                } catch (e) {
-                                    console.error(`[displayOverlayLayers] Error ADDING layer to map for "${legendTitle}" - ${bandsData[index].label}:`, e, layer);
-                                }
-                            } else {
-                                // Warning already logged in loadGeoJsonBand if fetch/parse failed
-                            }
-                        });
-
-                        if (map.hasLayer(maskLayer)) maskLayer.bringToFront();
-                        if (map.hasLayer(alfonsoBorderLayer)) alfonsoBorderLayer.bringToFront();
-
-                        if (!activeLegend && bandsData.length > 0 && layersAddedToMap > 0) {
-                            activeLegend = L.control({position: 'bottomright'});
-                            activeLegend.onAdd = function (map) {
-                                var div = L.DomUtil.create('div', 'info legend');
-                                div.innerHTML += `<h4>${legendTitle}</h4>`;
-                                bandsData.forEach(band => { div.innerHTML += `<i style="background:${band.color}"></i> ${band.label}<br>`; });
-                                return div;
-                            };
-                            activeLegend.addTo(map);
-                        } else if (layersAddedToMap === 0 && bandsData.length > 0) {
-                             console.warn(`[displayOverlayLayers] No layers were successfully loaded or added for "${legendTitle}", so no legend displayed.`);
-                        }
-                    }).catch(error => {
-                         console.error(`[displayOverlayLayers] Outer Promise.all error for "${legendTitle}" layers:`, error);
-                    });
-                }
-
-                // function displayCropSuitability(cropName) {
-                //     clearActiveOverlays();
-                //     clearCropSuitabilityDisplay();
-
-                //     const suitabilityInfo = cropSuitability[cropName];
-                //     if (!suitabilityInfo) {
-                //         console.warn(`[displayCropSuitability] No suitability info for crop: "${cropName}"`);
-                //         return;
-                //     }
-
-                //     let someLayerDisplayed = false;
-                //     Object.entries(allElevationBandLayers).forEach(([bandNum, bandObj]) => {
-                //         const bandNumberInt = parseInt(bandNum);
-                //         const isSuitable = suitabilityInfo.suitableElevationBands.includes(bandNumberInt);
-                //         const color = isSuitable ? SUITABLE_COLOR : NOT_SUITABLE_COLOR;
-
-                //         if (bandObj.geojson) {
-                //             if (bandObj.layer && map.hasLayer(bandObj.layer)) {
-                //                 map.removeLayer(bandObj.layer);
-                //             }
-                //             try {
-                //                 bandObj.layer = L.geoJSON(bandObj.geojson, {
-                //                     style: { fillColor: color, weight: 0.2, opacity: 1, color: 'grey', fillOpacity: 0.7 }
-                //                 }).addTo(map);
-                //                 someLayerDisplayed = true;
-                //             } catch (e) {
-                //                 console.error(`[displayCropSuitability] Error creating/adding suitability layer for band ${bandNum}:`, e);
-                //             }
-                //         } else {
-                //             console.warn(`[displayCropSuitability] GeoJSON for elevation band ${bandNum} not preloaded. Cannot display suitability.`);
-                //         }
-                //     });
-
-                //     if (map.hasLayer(maskLayer)) maskLayer.bringToFront();
-                //     if (map.hasLayer(alfonsoBorderLayer)) alfonsoBorderLayer.bringToFront();
-
-                //     if (!cropSuitabilityLegend && someLayerDisplayed) {
-                //         cropSuitabilityLegend = L.control({position: 'bottomright'});
-                //         cropSuitabilityLegend.onAdd = function(map) {
-                //             var div = L.DomUtil.create('div', 'info legend');
-                //             div.innerHTML += `<h4>${cropName} Suitability</h4>`;
-                //             div.innerHTML += `<i class="suitability-i" style="background:${SUITABLE_COLOR}"></i> Suitable<br>`;
-                //             div.innerHTML += `<i class="suitability-i" style="background:${NOT_SUITABLE_COLOR}"></i> Not Suitable`;
-                //             return div;
-                //         };
-                //         cropSuitabilityLegend.addTo(map);
-                //     } else if (!someLayerDisplayed) {
-                //          console.warn(`[displayCropSuitability] No suitability layers displayed for "${cropName}", no legend added.`);
-                //     }
-                // }
-
-
-                function displayChayoteSuitability() {
-                    clearActiveOverlays(); // Clear previous overlays, including map-type overlays.
-                    clearCropSuitabilityDisplay();
-
-                    const basePath = 'geojsons/Crop_Suitability/Chayote/';
-                    const layers = [
-                        { file: basePath + 'Suitable.geojson', color: CROP_SUITABILITY_COLORS.Suitable, label: 'Suitable', layer: null },
-                        { file: basePath + 'Suitable_Limit_Soil.geojson', color: CROP_SUITABILITY_COLORS.Suitable_Limit_Soil, label: 'Suitable (Limitations With Soil)', layer: null },
-                        { file: basePath + 'NOT_Suitable.geojson', color: CROP_SUITABILITY_COLORS.NOT_Suitable, label: 'Not Suitable', layer: null }
-                    ];
-
-                    const loadAndAddLayer = (layerInfo) => {
-                        return fetch(layerInfo.file)
-                            .then(response => {
-                                if (!response.ok) {
-                                    console.warn(`Failed to load ${layerInfo.file}`);
+                                    const geojsonLayer = L.geoJSON(geojson, {
+                                        style: {
+                                            fillColor: layerInfo.color,
+                                            weight: 0.2,
+                                            opacity: 1,
+                                            color: 'grey',
+                                            fillOpacity: 0.7
+                                        }
+                                    }).addTo(map);
+                                    layerInfo.layer = geojsonLayer; 
+                                    activeOverlayLayers.push(geojsonLayer); // Manage these layers too
+                                    return layerInfo; 
+                                } catch (error) {
+                                    console.error(`Error creating GeoJSON layer for ${layerInfo.file}:`, error);
                                     return null;
                                 }
-                                return response.json();
-                            })
-                            .then(geojson => {
-                                if (geojson) {
-                                    try {
-                                        const geojsonLayer = L.geoJSON(geojson, {
-                                            style: {
-                                                fillColor: layerInfo.color,
-                                                weight: 0.2,
-                                                opacity: 1,
-                                                color: 'grey',
-                                                fillOpacity: 0.7
-                                            }
-                                        }).addTo(map);
-                                        layerInfo.layer = geojsonLayer; // Store the layer
-                                        activeOverlayLayers.push(geojsonLayer);
-                                        return layerInfo; // Return the layerInfo with the added layer
-                                    } catch (error) {
-                                        console.error(`Error creating GeoJSON layer for ${layerInfo.file}:`, error);
-                                        return null;
-                                    }
-                                }
-                                return null;
-                            })
-                            .catch(error => {
-                                console.error(`Error fetching ${layerInfo.file}:`, error);
-                                return null;
-                            });
-                    };
-
-                    Promise.all(layers.map(loadAndAddLayer))
-                    .then(loadedLayers => {
-                        // After all layers are loaded
-                        const validLayers = loadedLayers.filter(layer => layer !== null);
-                        if (validLayers.length === 0) {
-                            console.warn("No valid layers were loaded.");
-                            return;
-                        }
-
-
-                        if (map.hasLayer(maskLayer)) maskLayer.bringToFront();
-                        if (map.hasLayer(alfonsoBorderLayer)) alfonsoBorderLayer.bringToFront();
-
-                        // Create and add the legend
-                        if (!cropSuitabilityLegend) {
-                            cropSuitabilityLegend = L.control({ position: 'bottomright' });
-                            cropSuitabilityLegend.onAdd = function(map) {
-                                const div = L.DomUtil.create('div', 'info legend');
-                                div.innerHTML += '<h4>Chayote Suitability</h4>';
-                                validLayers.forEach(layer => {
-                                    div.innerHTML += `<i class="suitability-i" style="background:${layer.color}"></i> ${layer.label}<br>`;
-                                });
-                                return div;
-                            };
-                            cropSuitabilityLegend.addTo(map);
-                        }
-
-                    }).catch(error => {
-                        console.error("Error in promise chain:", error);
-                    });
-                }
-
-                function displayPapayaSuitability() {
-                    clearActiveOverlays(); // Clear previous overlays, including map-type overlays.
-                    clearCropSuitabilityDisplay();
-
-                    const basePath = 'geojsons/Crop_Suitability/Papaya/';
-                    const layers = [
-                        { file: basePath + 'Suitable.geojson', color: CROP_SUITABILITY_COLORS.Suitable, label: 'Suitable', layer: null },
-                        { file: basePath + 'Suitable_Limit_Soil.geojson', color: CROP_SUITABILITY_COLORS.Suitable_Limit_Soil, label: 'Suitable (Limitations With Soil)', layer: null }
-                    ];
-
-                    const loadAndAddLayer = (layerInfo) => {
-                        return fetch(layerInfo.file)
-                            .then(response => {
-                                if (!response.ok) {
-                                    console.warn(`Failed to load ${layerInfo.file}`);
-                                    return null;
-                                }
-                                return response.json();
-                            })
-                            .then(geojson => {
-                                if (geojson) {
-                                    try {
-                                        const geojsonLayer = L.geoJSON(geojson, {
-                                            style: {
-                                                fillColor: layerInfo.color,
-                                                weight: 0.2,
-                                                opacity: 1,
-                                                color: 'grey',
-                                                fillOpacity: 0.7
-                                            }
-                                        }).addTo(map);
-                                        layerInfo.layer = geojsonLayer; // Store the layer
-                                        activeOverlayLayers.push(geojsonLayer);
-                                        return layerInfo; // Return the layerInfo with the added layer
-                                    } catch (error) {
-                                        console.error(`Error creating GeoJSON layer for ${layerInfo.file}:`, error);
-                                        return null;
-                                    }
-                                }
-                                return null;
-                            })
-                            .catch(error => {
-                                console.error(`Error fetching ${layerInfo.file}:`, error);
-                                return null;
-                            });
-                    };
-
-                    Promise.all(layers.map(loadAndAddLayer))
-                    .then(loadedLayers => {
-                        // After all layers are loaded
-                        const validLayers = loadedLayers.filter(layer => layer !== null);
-                        if (validLayers.length === 0) {
-                            console.warn("No valid layers were loaded.");
-                            return;
-                        }
-
-
-                        if (map.hasLayer(maskLayer)) maskLayer.bringToFront();
-                        if (map.hasLayer(alfonsoBorderLayer)) alfonsoBorderLayer.bringToFront();
-
-                        // Create and add the legend
-                        if (!cropSuitabilityLegend) {
-                            cropSuitabilityLegend = L.control({ position: 'bottomright' });
-                            cropSuitabilityLegend.onAdd = function(map) {
-                                const div = L.DomUtil.create('div', 'info legend');
-                                div.innerHTML += '<h4>Papaya Suitability</h4>';
-                                validLayers.forEach(layer => {
-                                    div.innerHTML += `<i class="suitability-i" style="background:${layer.color}"></i> ${layer.label}<br>`;
-                                });
-                                return div;
-                            };
-                            cropSuitabilityLegend.addTo(map);
-                        }
-
-                    }).catch(error => {
-                        console.error("Error in promise chain:", error);
-                    });
-                }
-
-
-                function initializeMapTypeControls() {
-                    const mapTypeRadios = document.querySelectorAll('input[name="map-type"]');
-                    mapTypeRadios.forEach(radio => {
-                        radio.addEventListener('change', function() {
-                            if (this.checked) {
-                                if (this.value === 'topography') {
-                                    displayOverlayLayers(elevationBandsData, 'Elevation (m)');
-                                } else if (this.value === 'rain') {
-                                    displayOverlayLayers(rainfallBandsData, 'Rainfall (mm)');
-                                } else if (this.value === 'temperature') {
-                                    displayOverlayLayers(maxTempBandsData, 'Max Temperature');
-                                } else if (this.value === 'soil') {
-                                    displayOverlayLayers(soilLayersData, 'Soil Type');
-                                }
                             }
+                            return null;
+                        })
+                        .catch(error => {
+                            console.error(`Error fetching ${layerInfo.file}:`, error);
+                            return null;
                         });
-                    });
-                }
+                };
 
-                function initializeCropSelectionControls() {
-                     const cropRadios = document.querySelectorAll('input[name="crop-selection"]');
-                    cropRadios.forEach(radio => {
-                        radio.addEventListener('change', function() {
-                            if (this.checked) {
-                                const cropType = this.value;
+                Promise.all(layers.map(loadAndAddLayer))
+                .then(loadedLayers => {
+                    const validLayers = loadedLayers.filter(layer => layer !== null);
+                    if (validLayers.length === 0) {
+                        console.warn("No valid Papaya suitability layers were loaded.");
+                        return;
+                    }
 
-                                //Clear other crop overlays first
-                                clearActiveOverlays();
-                                clearCropSuitabilityDisplay();
+                    if (map.hasLayer(maskLayer)) maskLayer.bringToFront();
+                    if (map.hasLayer(alfonsoBorderLayer)) alfonsoBorderLayer.bringToFront();
 
-                                // Handle the selected crop
-                                switch (cropType) {
-                                    case 'Chayote':
-                                        displayChayoteSuitability();
-                                        break;
-                                    case 'Papaya':
-                                        displayPapayaSuitability();
-                                        break;
-                                    case 'Cucumber':
-                                    case 'Eggplant':
-                                    case 'Chili':
-                                         // For other crops that require elevation band processing
-                                        // if (Object.keys(allElevationBandLayers).length !== elevationBandsData.length ||
-                                        //     Object.values(allElevationBandLayers).some(obj => obj.geojson === null || obj.geojson === undefined)) {
-                                        //     console.warn("Elevation bands not fully preloaded or some failed. Crop suitability display might be incomplete or inaccurate.");
-                                        // }
-                                        // displayCropSuitability(cropType);
-                                        break;
-                                    default:
-                                        console.warn(`No display function defined for crop: ${cropType}`);
-                                        break;
-                                }
+                    if (!cropSuitabilityLegend) {
+                        cropSuitabilityLegend = L.control({ position: 'bottomright' });
+                        cropSuitabilityLegend.onAdd = function(map) {
+                            const div = L.DomUtil.create('div', 'info legend');
+                            div.innerHTML += '<h4>Papaya Suitability</h4>';
+                            validLayers.forEach(layer => {
+                                div.innerHTML += `<i class="suitability-i" style="background:${layer.color}"></i> ${layer.label}<br>`;
+                            });
+                            return div;
+                        };
+                        cropSuitabilityLegend.addTo(map);
+                    }
+                }).catch(error => {
+                    console.error("Error in Papaya suitability promise chain:", error);
+                });
+            }
+
+
+            function initializeMapTypeControls() {
+                const mapTypeRadios = document.querySelectorAll('input[name="map-type"]');
+                mapTypeRadios.forEach(radio => {
+                    radio.addEventListener('change', function() {
+                        if (this.checked) {
+                            // When a map type is selected, uncheck crop selection
+                            document.querySelectorAll('input[name="crop-selection"]').forEach(cropRadio => cropRadio.checked = false);
+                            
+                            if (this.value === 'topography') {
+                                displayOverlayLayers(elevationBandsData, 'Elevation (m)');
+                            } else if (this.value === 'rain') {
+                                displayOverlayLayers(rainfallBandsData, 'Rainfall (mm)');
+                            } else if (this.value === 'temperature') {
+                                displayOverlayLayers(maxTempBandsData, 'Max Temperature');
+                            } else if (this.value === 'soil') {
+                                displayOverlayLayers(soilLayersData, 'Soil Type');
+                            } else if (this.value === 'barangays') {
+                                displayBarangayLayer();
                             }
-                        });
+                        }
                     });
-                }
-                
-                document.querySelectorAll('input[name="map-type"]').forEach(radio => radio.checked = false);
-                document.querySelectorAll('input[name="crop-selection"]').forEach(radio => radio.checked = false);
+                });
+            }
 
-            }); // End DOMContentLoaded
-        </script>
-    </body>
+            function initializeCropSelectionControls() {
+                 const cropRadios = document.querySelectorAll('input[name="crop-selection"]');
+                cropRadios.forEach(radio => {
+                    radio.addEventListener('change', function() {
+                        if (this.checked) {
+                            // When a crop is selected, uncheck map type selection
+                            document.querySelectorAll('input[name="map-type"]').forEach(mapRadio => mapRadio.checked = false);
+
+                            const cropType = this.value;
+                            // Note: clearActiveOverlays() and clearCropSuitabilityDisplay() are called
+                            // inside the specific display functions (displayChayoteSuitability, etc.)
+
+                            switch (cropType) {
+                                case 'Chayote':
+                                    displayChayoteSuitability();
+                                    break;
+                                case 'Papaya':
+                                    displayPapayaSuitability();
+                                    break;
+                                case 'Cucumber':
+                                case 'Eggplant':
+                                case 'Chili':
+                                     // Placeholder for other crops if they have dedicated GeoJSONs
+                                     // or if you re-implement the elevation-based suitability
+                                    clearActiveOverlays();
+                                    clearCropSuitabilityDisplay();
+                                    console.warn(`Display logic for ${cropType} (non-GeoJSON based) is not fully implemented with new structure.`);
+                                    // If you intend to use the old displayCropSuitability for these:
+                                    // displayCropSuitability(cropType); // You would need to uncomment/adapt this function
+                                    alert(`${cropType} suitability display is currently a placeholder.`);
+                                    break;
+                                default:
+                                    clearActiveOverlays();
+                                    clearCropSuitabilityDisplay();
+                                    console.warn(`No display function defined for crop: ${cropType}`);
+                                    break;
+                            }
+                        }
+                    });
+                });
+            }
+            
+            // Ensure no radio buttons are checked on initial load
+            document.querySelectorAll('input[name="map-type"]').forEach(radio => radio.checked = false);
+            document.querySelectorAll('input[name="crop-selection"]').forEach(radio => radio.checked = false);
+
+        }); // End DOMContentLoaded
+    </script>
+</body>
 </html>
